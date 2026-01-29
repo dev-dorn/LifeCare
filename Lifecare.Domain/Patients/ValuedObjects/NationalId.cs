@@ -1,6 +1,8 @@
+using Lifecare.Domain.Common;
+
 namespace LifeCare.Domain.Patients.ValuedObjects;
 
-public class NationalId
+public record NationalId
 {
     public string Value { get; }
     public string CountryCode { get; }
@@ -9,9 +11,17 @@ public class NationalId
     {
         if (string.IsNullOrWhiteSpace(value))
             throw new DomainException("National ID cannot be empty");
+
+        if (!System.Text.RegularExpressions.Regex.IsMatch(value, @"^[A-Za-z0-9]+$"))
+            throw new DomainException("National ID must be alphanumeric");
+
         Value = value.Trim();
-        CountryCode = countryCode.ToUpper();
-        
+        CountryCode = countryCode?.Trim().ToUpper() ?? "KENYA";
     }
-    public override string ToString() => Value;
+
+    public bool Matches(string value, string countryCode) =>
+        Value.Equals(value.Trim(), StringComparison.OrdinalIgnoreCase) &&
+        CountryCode.Equals(countryCode.Trim().ToUpper(), StringComparison.OrdinalIgnoreCase);
+
+    public override string ToString() => $"{CountryCode}:{Value}";
 }

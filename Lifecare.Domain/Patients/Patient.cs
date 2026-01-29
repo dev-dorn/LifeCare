@@ -1,51 +1,45 @@
 // LifeCare.Domain/Patients/Patient.cs
-using System;
+
+using Lifecare.Domain.Common;
 using LifeCare.Domain.Common;
-using LifeCare.Domain.Events;
+using Lifecare.Domain.Events;
 using LifeCare.Domain.Patients.Enums;
 using LifeCare.Domain.Patients.ValuedObjects;
-
 
 namespace LifeCare.Domain.Patients
 {
     public class Patient : AggregateRoot
     {
-        // Identity
         public PatientId Id { get; private set; }
         public MedicalRecordNumber MRN { get; private set; }
         public NationalId NationalId { get; private set; }
-        
-        // Demographics
         public string FirstName { get; private set; }
         public string LastName { get; private set; }
         public DateTime DateOfBirth { get; private set; }
         public string Gender { get; private set; }
-        
-        // Contact Information
         public string PhoneNumber { get; private set; }
-        public string Email { get; set; }
-        public Address Address { get; set; }
-        
-        // Medical Status
+        public string Email { get; private set; }
+        public string Street { get; private set; }
+        public string City { get; private set; }
+        public string State { get; private set; }
+        public string ZipCode { get; private set; }
         public PatientStatus Status { get; private set; }
-        
-        // Computed Properties
-        public int Age => CalculateAge();
-        public bool RequiresGuardian => Age < 18;
-        
-        // Guardian Information (for minors)
-        public Guardian Guardian { get; private set; }
-        
-        // Audit
         public DateTime CreatedAt { get; private set; }
         public string CreatedBy { get; private set; }
+        public string GuardianName { get; private set; }
+        public string GuardianRelationship { get; private set; }
+        public string GuardianPhone { get; private set; }
+        
+        // Computed properties
+        public int Age => CalculateAge();
+        public bool RequiresGuardian => Age < 18;
         
         // Private constructor for EF Core
         private Patient() { }
         
-        // Factory method for creating new patients
+        // Factory method
         public static Patient Create(
-            string nationalId,
+            NationalId nationalId,
             string firstName,
             string lastName,
             DateTime dateOfBirth,
@@ -54,7 +48,67 @@ namespace LifeCare.Domain.Patients
             MedicalRecordNumber mrn,
             string createdBy)
         {
-            // Validate required fields
+            ValidateInput(nationalId.Value, firstName, lastName, dateOfBirth, gender, phoneNumber);
+            
+            var patient = new Patient
+            {
+                Id = PatientId.New(),
+                NationalId = nationalId,
+                FirstName = firstName.Trim(),
+                LastName = lastName.Trim(),
+                DateOfBirth = dateOfBirth,
+                Gender = gender,
+                PhoneNumber = phoneNumber.Trim(),
+                MRN = mrn,
+                Status = PatientStatus.AwaitingTriage,
+                CreatedAt = DateTime.UtcNow,
+                CreatedBy = createdBy
+            };
+            
+            // Add domain event
+            patient.AddDomainEvent(
+                new PatientRegisteredEvent(patient.Id, patient.MRN.Value));
+            
+            return patient;
+        }
+        
+        public void UpdateContactInfo(string email, string street, string city, string state, string zipCode)
+        {
+            if (!string.IsNullOrWhiteSpace(email))
+            {
+                if (!IsValidEmail(email))
+                    throw new DomainException("Invalid email format");
+                    
+                Email = email.Trim();
+            }
+            
+            Street = street?.Trim();
+            City = city?.Trim();
+            State = state?.Trim();
+            ZipCode = zipCode?.Trim();
+        }
+        
+        public void AssignGuardian(string name, string relationship, string phone)
+        {
+            if (!RequiresGuardian)
+                throw new DomainException("Guardian is only required for patients under 18");
+                
+            if (string.IsNullOrWhiteSpace(name))
+                throw new DomainException("Guardian name is required");
+                
+            GuardianName = name.Trim();
+            GuardianRelationship = relationship?.Trim();
+            GuardianPhone = phone?.Trim();
+        }
+        
+        private static void ValidateInput(
+            string nationalId,
+            string firstName,
+            string lastName,
+            DateTime dateOfBirth,
+            string gender,
+            string phoneNumber)
+        {
             if (string.IsNullOrWhiteSpace(nationalId))
                 throw new DomainException("National ID is required");
                 
@@ -74,56 +128,6 @@ namespace LifeCare.Domain.Patients
             var validGenders = new[] { "Male", "Female", "Other", "Unknown" };
             if (!validGenders.Contains(gender))
                 throw new DomainException($"Gender must be one of: {string.Join(", ", validGenders)}");
-            
-            var patient = new Patient
-            {
-                Id = PatientId.New(),
-                NationalId = new NationalId(nationalId),
-                FirstName = firstName.Trim(),
-                LastName = lastName.Trim(),
-                DateOfBirth = dateOfBirth,
-                Gender = gender,
-                PhoneNumber = phoneNumber.Trim(),
-                MRN = mrn,
-                Status = PatientStatus.AwaitingTriage,
-                CreatedAt = DateTime.UtcNow,
-                CreatedBy = createdBy
-            };
-            
-            // Add domain event
-            patient.AddDomainEvent(new PatientRegisteredEvent(patient.Id, patient.MRN.Value));
-            
-            return patient;
-        }
-        
-        public void UpdateContactInfo(string email, Address address)
-        {
-            if (!string.IsNullOrWhiteSpace(email))
-            {
-                if (!IsValidEmail(email))
-                    throw new DomainException("Invalid email format");
-                    
-                Email = email.Trim();
-            }
-            
-            Address = address;
-        }
-        
-        public void AssignGuardian(string firstName, string lastName, string relationship, string phoneNumber)
-        {
-            if (!RequiresGuardian)
-                throw new DomainException("Guardian is only required for patients under 18");
-                
-            Guardian = new Guardian(firstName, lastName, relationship, phoneNumber);
-        }
-        
-        public void MoveToTriage()
-        {
-            if (Status != PatientStatus.AwaitingTriage)
-                throw new DomainException($"Patient must be in AwaitingTriage status to move to triage. Current status: {Status}");
-                
-            Status = PatientStatus.InTriage;
-            AddDomainEvent(new PatientMovedToTriageEvent(Id));
         }
         
         private int CalculateAge()
@@ -148,6 +152,14 @@ namespace LifeCare.Domain.Patients
             {
                 return false;
             }
+        }
+        
+        public void MoveToTriage()
+        {
+            if (Status != PatientStatus.AwaitingTriage)
+                throw new DomainException($"Patient must be in AwaitingTriage status. Current: {Status}");
+                
+            Status = PatientStatus.InTriage;
         }
     }
 }
