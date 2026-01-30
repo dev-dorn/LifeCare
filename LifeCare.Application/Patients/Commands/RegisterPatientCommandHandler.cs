@@ -22,91 +22,97 @@ namespace LifeCare.Application.Patients.Commands
             _logger = logger;
         }
         
-        public async Task<RegisterPatientResult> Handle(
-            RegisterPatientCommand request, 
-            CancellationToken cancellationToken)
+       public async Task<RegisterPatientResult> Handle(
+    RegisterPatientCommand request,
+    CancellationToken cancellationToken)
+{
+    try
+    {
+        _logger.LogInformation(
+            "Starting patient registration for National ID: {NationalId}",
+            request.NationalId);
+
+        // Check duplicate
+        var existingPatient =
+            await _patientRepository.GetByNationalIdAsync(request.NationalId);
+
+        if (existingPatient != null)
         {
-            try
-            {
-                _logger.LogInformation("Starting patient registration for National ID: {NationalId}", request.NationalId);
-                
-                // Check for duplicate National ID
-                var existingPatient = await _patientRepository.GetByNationalIdAsync(request.NationalId);
-                if (existingPatient != null)
-                {
-                    return RegisterPatientResult.Failure(
-                        $"Patient with National ID '{request.NationalId}' already exists (MRN: {existingPatient.MRN.Value})");
-                }
-                
-                // Generate MRN using value object
-                var nextSequence = await _patientRepository.GetNextMrnSequenceAsync();
-                var mrn = MedicalRecordNumber.Generate(nextSequence);
-
-                // Create NationalId value object
-                var nationalIdVo = new NationalId(request.NationalId);
-
-                // Create patient aggregate
-                var patient = Patient.Create(
-                    nationalIdVo,
-                    request.FirstName,
-                    request.LastName,
-                    request.DateOfBirth,
-                    request.Gender,
-                    request.PhoneNumber,
-                    mrn,
-                    request.ReceptionistId);
-                
-                // Add optional contact information
-                patient.UpdateContactInfo(
-                    request.Email,
-                    request.Street,
-                    request.City,
-                    request.State,
-                    request.ZipCode);
-                
-                // Add guardian if patient is a minor
-                if (patient.RequiresGuardian)
-                {
-                    if (string.IsNullOrWhiteSpace(request.GuardianName))
-                    {
-                        return RegisterPatientResult.Failure(
-                            "Guardian information is required for patients under 18 years old");
-                    }
-                    
-                    patient.AssignGuardian(
-                        request.GuardianName,
-                        request.GuardianRelationship,
-                        request.GuardianPhone);
-                }
-                
-                // Save patient
-                await _patientRepository.AddAsync(patient);
-                await _patientRepository.SaveChangesAsync(cancellationToken);
-                
-                _logger.LogInformation(
-                    "Patient registered successfully. MRN: {MRN}, Name: {Name}, Age: {Age}",
-                    patient.MRN,
-                    $"{patient.FirstName} {patient.LastName}",
-                    patient.Age);
-                
-                // Return success
-                var patientDto = PatientDto.FromPatient(patient);
-                return RegisterPatientResult.Success(
-                    patient.MRN,
-                    $"{patient.FirstName} {patient.LastName}",
-                    patient.Age,
-                    patient.RequiresGuardian);
-            }
-            catch (DomainException ex)
-            {
-                _logger.LogWarning(ex, "Domain validation failed during patient registration");
-                return RegisterPatientResult.Failure(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An unexpected error occurred during patient registration");
-                return RegisterPatientResult.Failure("An unexpected error occurred. Please try again.");
-            }
+            return RegisterPatientResult.Failure(
+                $"Patient with National ID '{request.NationalId}' already exists (MRN: {existingPatient.MRN})");
         }
+
+        // Generate MRN string
+        var sequence = await _patientRepository.GetNextMrnSequenceAsync();
+        var mrn = MedicalRecordNumber.Generate(sequence).Value;
+
+        // Create patient (STRINGS ONLY)
+        var patient = Patient.Create(
+            request.NationalId,
+            request.FirstName,
+            request.LastName,
+            request.DateOfBirth,
+            request.Gender,
+            request.PhoneNumber,
+            mrn,
+            request.ReceptionistId);
+
+        // Optional contact info
+        patient.UpdateContactInfo(
+            request.Email,
+            request.Street,
+            request.City,
+            request.State,
+            request.ZipCode);
+
+        // Guardian logic (matches domain)
+        if (patient.RequiresGuardian)
+        {
+            if (request.Guardian == null)
+            {
+                return RegisterPatientResult.Failure(
+                    "Guardian information is required for patients under 18 years old");
+            }
+
+            var guardianFullName =
+                $"{request.Guardian.FirstName} {request.Guardian.LastName}";
+
+            patient.AssignGuardian(
+                guardianFullName,
+                request.Guardian.Relationship,
+                request.Guardian.PhoneNumber);
+        }
+
+        await _patientRepository.AddAsync(patient);
+        await _patientRepository.SaveChangesAsync(cancellationToken);
+        var patientDto = PatientDto.FromPatient(patient);
+
+
+        _logger.LogInformation(
+            "Patient registered successfully. MRN: {MRN}, Name: {Name}",
+            patient.MRN,
+            $"{patient.FirstName} {patient.LastName}");
+
+        return RegisterPatientResult.Success(
+            patient.MRN,
+            patientDto,
+            $"{patient.FirstName} {patient.LastName}",
+            patient.Age,
+            patient.RequiresGuardian
+            );
+    }
+    catch (DomainException ex)
+    {
+        _logger.LogWarning(ex, "Domain validation failed");
+        return RegisterPatientResult.Failure(ex.Message);
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "Unexpected error during patient registration");
+        return RegisterPatientResult.Failure(
+            "An unexpected error occurred. Please try again.");
+    }
+}
+
     }
 }
