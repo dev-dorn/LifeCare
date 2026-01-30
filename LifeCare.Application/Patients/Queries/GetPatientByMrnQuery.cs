@@ -1,5 +1,6 @@
 
 using LifeCare.Application.Interfaces;
+using LifeCare.Application.Interfaces.Repositories;
 using MediatR;
 using LifeCare.Application.Patients.Dtos;
 

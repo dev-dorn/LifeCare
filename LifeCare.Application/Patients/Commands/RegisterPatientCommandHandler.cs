@@ -1,7 +1,9 @@
 using LifeCare.Application.Interfaces;
+using LifeCare.Application.Interfaces.Repositories;
+using LifeCare.Application.Patients.Dtos;
 using MediatR;
 using LifeCare.Domain.Patients;
-using Lifecare.Domain.Common;
+using LifeCare.Domain.Common;
 using LifeCare.Domain.Patients.ValuedObjects;
 using Microsoft.Extensions.Logging;
 
@@ -83,13 +85,14 @@ namespace LifeCare.Application.Patients.Commands
                 
                 _logger.LogInformation(
                     "Patient registered successfully. MRN: {MRN}, Name: {Name}, Age: {Age}",
-                    patient.MRN.Value,
+                    patient.MRN,
                     $"{patient.FirstName} {patient.LastName}",
                     patient.Age);
                 
                 // Return success
+                var patientDto = PatientDto.FromPatient(patient);
                 return RegisterPatientResult.Success(
-                    patient.MRN.Value,
+                    patient.MRN,
                     $"{patient.FirstName} {patient.LastName}",
                     patient.Age,
                     patient.RequiresGuardian);

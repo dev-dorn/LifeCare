@@ -1,6 +1,5 @@
-using LifeCare.Application.Interfaces;
+using LifeCare.Application.Interfaces.Repositories;
 using LifeCare.Application.Patients.Dtos;
-using LifeCare.Domain.Patients;
 using MediatR;
 
 namespace LifeCare.Application.Patients.Queries;
@@ -9,9 +8,6 @@ public class GetAllPatientsQuery : IRequest<List<PatientDto>>
 {
     public int Page { get; set; } = 1;
     public int PageSize { get; set; } = 20;
-    
-    
-    
 }
 
 public class GetAllPatientsQueryHandler : IRequestHandler<GetAllPatientsQuery, List<PatientDto>>
@@ -28,6 +24,8 @@ public class GetAllPatientsQueryHandler : IRequestHandler<GetAllPatientsQuery, L
         var patients = await _patientRepository.GetAllAsync();
 
         return patients
+            .Skip((request.Page - 1) * request.PageSize)
+            .Take(request.PageSize)
             .Select(PatientDto.FromPatient)
             .ToList();
     }

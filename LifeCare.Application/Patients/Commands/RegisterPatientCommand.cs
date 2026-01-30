@@ -1,4 +1,6 @@
 // LifeCare.Application/Patients/Commands/RegisterPatientCommand.cs
+
+using LifeCare.Application.Patients.Dtos;
 using MediatR;
 
 namespace LifeCare.Application.Patients.Commands
@@ -16,40 +18,37 @@ namespace LifeCare.Application.Patients.Commands
         public string City { get; set; }
         public string State { get; set; }
         public string ZipCode { get; set; }
-        public string GuardianName { get; set; }
-        public string GuardianRelationship { get; set; }
-        public string GuardianPhone { get; set; }
+        public GuardianRequest Guardian { get; set; }
         public string ReceptionistId { get; set; }
+    }
+    public class GuardianRequest
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Relationship { get; set; }
+        public string PhoneNumber { get; set; }
     }
     
     public class RegisterPatientResult
-    {
+    { 
         public bool IsSuccess { get; set; }
-        public string MRN { get; set; }
-        public string PatientName { get; set; }
+        public string MRN { get; set; } 
+        public string Error { get; set; }
+        public PatientDto PatientDto { get; set; }
+        public string Name { get; set; } 
         public int Age { get; set; }
         public bool RequiresGuardian { get; set; }
-        public string Error { get; set; }
-        
-        public static RegisterPatientResult Success(string mrn, string patientName, int age, bool requiresGuardian)
+        public static RegisterPatientResult Success(string mrn, PatientDto patientDto, string name, int age, bool requiresGuardian) 
         {
-            return new RegisterPatientResult
-            {
-                IsSuccess = true,
-                MRN = mrn,
-                PatientName = patientName,
-                Age = age,
-                RequiresGuardian = requiresGuardian
-            };
+            return new RegisterPatientResult 
+            { IsSuccess = true, MRN = mrn, PatientDto = patientDto, Name = name, Age = age, RequiresGuardian = requiresGuardian };
+            
         }
-        
+
         public static RegisterPatientResult Failure(string error)
         {
-            return new RegisterPatientResult
-            {
-                IsSuccess = false,
-                Error = error
-            };
-        }
+            return new RegisterPatientResult { IsSuccess = false, Error = error };
+            
+        } 
     }
 }

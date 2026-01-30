@@ -1,85 +1,98 @@
-using LifeCare.Application.Interfaces;
+using LifeCare.Application.Interfaces.Repositories;
 using LifeCare.Domain.Patients;
 
-public class InMemoryPatientRepository : IPatientRepository
+namespace LifeCare.Infrastructure.Repositories
 {
-    private readonly List<Patient> _patients = new();
-
-    public Task<Patient?> GetByMrnAsync(string mrn)
+    public class InMemoryPatientRepository : IPatientRepository
     {
-        var patient = _patients.FirstOrDefault(p => p.MRN.Value == mrn);
-        return Task.FromResult(patient);
-    }
+        private readonly List<Patient> _patients = new();
 
-    // Required by interface
-    public Task<Patient?> GetByNationalIdAsync(string nationalId)
-    {
-        var patient = _patients.FirstOrDefault(p => p.NationalId.Value== nationalId);
-        return Task.FromResult(patient);
-    }
-
-    // Overload with countryCode (optional convenience)
-    public Task<Patient?> GetByNationalIdAsync(string nationalId, string countryCode)
-    {
-        var patient = _patients.FirstOrDefault(p =>
-            p.NationalId.Value == nationalId &&
-            p.NationalId.CountryCode == countryCode);
-        return Task.FromResult(patient);
-    }
-
-    public Task<bool> ExistsByNationalIdAsync(string nationalId)
-    {
-        var exists = _patients.Any(p => p.NationalId.Value == nationalId);
-        return Task.FromResult(exists);
-    }
-
-    public Task<List<Patient>> GetAllAsync()
-    {
-        return Task.FromResult(_patients.ToList());
-    }
-
-    public Task<Patient?> GetByIdAsync(Guid id)
-    {
-        var patient = _patients.FirstOrDefault(p => p.Id.Value == id);
-        return Task.FromResult(patient);
-    }
-
-    public Task<int> GetNextMrnSequenceAsync()
-    {
-        var currentYear = DateTime.Now.Year;
-        var patientsThisYear = _patients.Where(p => p.MRN.IsForYear(currentYear)).ToList();
-
-        if (!patientsThisYear.Any())
-            return Task.FromResult(1);
-
-        var lastSequence = patientsThisYear
-            .Select(p => p.MRN.TryGetSequence())
-            .Where(seq => seq.HasValue)
-            .Max() ?? 0;
-
-        return Task.FromResult(lastSequence + 1);
-    }
-
-    public Task AddAsync(Patient patient)
-    {
-        _patients.Add(patient);
-        return Task.CompletedTask;
-    }
-
-    public Task UpdateAsync(Patient patient)
-    {
-        var existing = _patients.FirstOrDefault(p => p.Id == patient.Id);
-        if (existing != null)
+        public Task<Patient?> GetByMrnAsync(string mrn)
         {
-            _patients.Remove(existing);
-            _patients.Add(patient);
+            return Task.FromResult(
+                _patients.FirstOrDefault(p => p.MRN == mrn)
+            );
         }
-        return Task.CompletedTask;
-    }
 
-    public Task SaveChangesAsync(CancellationToken cancellationToken)
-    {
-        // No-op for in-memory
-        return Task.CompletedTask;
+        public Task<Patient?> GetByNationalIdAsync(string nationalId)
+        {
+            return Task.FromResult(
+                _patients.FirstOrDefault(p => p.NationalId == nationalId)
+            );
+        }
+
+        public Task<bool> ExistsByNationalIdAsync(string nationalId)
+        {
+            return Task.FromResult(
+                _patients.Any(p => p.NationalId == nationalId)
+            );
+        }
+
+        public Task<List<Patient>> GetAllAsync()
+        {
+            return Task.FromResult(_patients.ToList());
+        }
+
+        public Task<Patient?> GetByIdAsync(Guid id)
+        {
+            return Task.FromResult(
+                _patients.FirstOrDefault(p => p.Id == id)
+            );
+        }
+
+        public Task<int> GetNextMrnSequenceAsync()
+        {
+            var currentYear = DateTime.Now.Year;
+
+            var sequences = _patients
+                .Select(p => p.MRN)
+                .Select(ParseMrn)
+                .Where(x => x.Year == currentYear)
+                .Select(x => x.Sequence);
+
+            if (!sequences.Any())
+                return Task.FromResult(1);
+
+            return Task.FromResult(sequences.Max() + 1);
+        }
+
+        public Task AddAsync(Patient patient)
+        {
+            _patients.Add(patient);
+            return Task.CompletedTask;
+        }
+
+        public Task UpdateAsync(Patient patient)
+        {
+            var existing = _patients.FirstOrDefault(p => p.Id == patient.Id);
+            if (existing != null)
+            {
+                _patients.Remove(existing);
+                _patients.Add(patient);
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task SaveChangesAsync(CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+
+        // -----------------------
+        // MRN PARSER (PRIVATE)
+        // -----------------------
+        private static (int Year, int Sequence) ParseMrn(string mrn)
+        {
+            // Expected: LC-2026-0001
+            var parts = mrn.Split('-');
+
+            if (parts.Length != 3)
+                return (0, 0);
+
+            int.TryParse(parts[1], out var year);
+            int.TryParse(parts[2], out var sequence);
+
+            return (year, sequence);
+        }
     }
 }

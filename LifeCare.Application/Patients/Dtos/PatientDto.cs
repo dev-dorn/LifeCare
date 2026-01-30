@@ -31,11 +31,13 @@ namespace LifeCare.Application.Patients.Dtos
         
         public static PatientDto FromPatient(Patient patient)
         {
+            if (patient == null) return null;
+            
             return new PatientDto
             {
-                Id = patient.Id.Value,
-                Mrn = patient.MRN.Value,
-                NationalId = patient.NationalId.Value,
+                Id = patient.Id,
+                Mrn = patient.MRN,
+                NationalId = patient.NationalId,
                 FirstName = patient.FirstName,
                 LastName = patient.LastName,
                 DateOfBirth = patient.DateOfBirth,

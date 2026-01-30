@@ -1,18 +1,13 @@
-// LifeCare.Domain/Patients/Patient.cs
-
-using Lifecare.Domain.Common;
 using LifeCare.Domain.Common;
-using Lifecare.Domain.Events;
-using LifeCare.Domain.Patients.Enums;
-using LifeCare.Domain.Patients.ValuedObjects;
+using LifeCare.Domain.Patients.Events;
 
 namespace LifeCare.Domain.Patients
 {
     public class Patient : AggregateRoot
     {
-        public PatientId Id { get; private set; }
-        public MedicalRecordNumber MRN { get; private set; }
-        public NationalId NationalId { get; private set; }
+        public Guid Id { get; private set; }
+        public string MRN { get; private set; }
+        public string NationalId { get; private set; }
         public string FirstName { get; private set; }
         public string LastName { get; private set; }
         public DateTime DateOfBirth { get; private set; }
@@ -30,30 +25,27 @@ namespace LifeCare.Domain.Patients
         public string GuardianRelationship { get; private set; }
         public string GuardianPhone { get; private set; }
         
-        // Computed properties
         public int Age => CalculateAge();
         public bool RequiresGuardian => Age < 18;
         
-        // Private constructor for EF Core
         private Patient() { }
         
-        // Factory method
         public static Patient Create(
-            NationalId nationalId,
+            string nationalId,
             string firstName,
             string lastName,
             DateTime dateOfBirth,
             string gender,
             string phoneNumber,
-            MedicalRecordNumber mrn,
+            string mrn,
             string createdBy)
         {
-            ValidateInput(nationalId.Value, firstName, lastName, dateOfBirth, gender, phoneNumber);
+            ValidateInput(nationalId, firstName, lastName, dateOfBirth, gender, phoneNumber);
             
             var patient = new Patient
             {
-                Id = PatientId.New(),
-                NationalId = nationalId,
+                Id = Guid.NewGuid(),
+                NationalId = nationalId.Trim(),
                 FirstName = firstName.Trim(),
                 LastName = lastName.Trim(),
                 DateOfBirth = dateOfBirth,
@@ -65,11 +57,48 @@ namespace LifeCare.Domain.Patients
                 CreatedBy = createdBy
             };
             
-            // Add domain event
-            patient.AddDomainEvent(
-                new PatientRegisteredEvent(patient.Id, patient.MRN.Value));
+            patient.AddDomainEvent(new PatientRegisteredEvent(patient.Id, patient.MRN));
             
             return patient;
+        }
+        
+        private static void ValidateInput(
+            string nationalId,
+            string firstName,
+            string lastName,
+            DateTime dateOfBirth,
+            string gender,
+            string phoneNumber)
+        {
+            if (string.IsNullOrWhiteSpace(nationalId))
+                throw new DomainException("National ID is required");
+                
+            if (string.IsNullOrWhiteSpace(firstName))
+                throw new DomainException("First name is required");
+                
+            if (string.IsNullOrWhiteSpace(lastName))
+                throw new DomainException("Last name is required");
+                
+            if (string.IsNullOrWhiteSpace(phoneNumber))
+                throw new DomainException("Phone number is required");
+                
+            if (dateOfBirth > DateTime.Today)
+                throw new DomainException("Date of birth cannot be in the future");
+                
+            var validGenders = new[] { "Male", "Female", "Other", "Unknown" };
+            if (!validGenders.Contains(gender))
+                throw new DomainException($"Gender must be one of: {string.Join(", ", validGenders)}");
+        }
+        
+        private int CalculateAge()
+        {
+            var today = DateTime.Today;
+            var age = today.Year - DateOfBirth.Year;
+            
+            if (DateOfBirth.Date > today.AddYears(-age))
+                age--;
+                
+            return age;
         }
         
         public void UpdateContactInfo(string email, string street, string city, string state, string zipCode)
@@ -101,46 +130,6 @@ namespace LifeCare.Domain.Patients
             GuardianPhone = phone?.Trim();
         }
         
-        private static void ValidateInput(
-            string nationalId,
-            string firstName,
-            string lastName,
-            DateTime dateOfBirth,
-            string gender,
-            string phoneNumber)
-        {
-            if (string.IsNullOrWhiteSpace(nationalId))
-                throw new DomainException("National ID is required");
-                
-            if (string.IsNullOrWhiteSpace(firstName))
-                throw new DomainException("First name is required");
-                
-            if (string.IsNullOrWhiteSpace(lastName))
-                throw new DomainException("Last name is required");
-                
-            if (string.IsNullOrWhiteSpace(phoneNumber))
-                throw new DomainException("Phone number is required");
-                
-            if (dateOfBirth > DateTime.Today)
-                throw new DomainException("Date of birth cannot be in the future");
-                
-            // Validate gender
-            var validGenders = new[] { "Male", "Female", "Other", "Unknown" };
-            if (!validGenders.Contains(gender))
-                throw new DomainException($"Gender must be one of: {string.Join(", ", validGenders)}");
-        }
-        
-        private int CalculateAge()
-        {
-            var today = DateTime.Today;
-            var age = today.Year - DateOfBirth.Year;
-            
-            if (DateOfBirth.Date > today.AddYears(-age))
-                age--;
-                
-            return age;
-        }
-        
         private bool IsValidEmail(string email)
         {
             try
@@ -152,14 +141,6 @@ namespace LifeCare.Domain.Patients
             {
                 return false;
             }
-        }
-        
-        public void MoveToTriage()
-        {
-            if (Status != PatientStatus.AwaitingTriage)
-                throw new DomainException($"Patient must be in AwaitingTriage status. Current: {Status}");
-                
-            Status = PatientStatus.InTriage;
         }
     }
 }

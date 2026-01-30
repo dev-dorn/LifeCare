@@ -1,7 +1,3 @@
-// LifeCare.Domain/Common/AggregateRoot.cs
-
-using Lifecare.Domain.Common;
-
 namespace LifeCare.Domain.Common
 {
     public abstract class AggregateRoot
