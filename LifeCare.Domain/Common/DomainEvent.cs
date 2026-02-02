@@ -1,8 +1,9 @@
+using MediatR;
 namespace LifeCare.Domain.Common
 {
-    public abstract class DomainEvent
+    public abstract class DomainEvent : INotification
     {
-        public DateTime OccurredOn { get; } = DateTime.UtcNow;
-        public Guid EventId { get; } = Guid.NewGuid();
+        public DateTime OccurredOn { get; protected set; } = DateTime.UtcNow;
+        public Guid EventId { get; protected set; } = Guid.NewGuid();
     }
 }

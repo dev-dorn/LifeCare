@@ -55,7 +55,11 @@ namespace LifeCare.Application.Patients.Commands
             request.Gender,
             request.PhoneNumber,
             mrn,
-            request.ReceptionistId);
+            request.ReceptionistId,
+            request.City,
+            request.State,
+            request.Email,
+            request.ZipCode);
 
         // Optional contact info
         patient.UpdateContactInfo(

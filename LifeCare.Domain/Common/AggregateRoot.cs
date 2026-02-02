@@ -4,11 +4,16 @@ namespace LifeCare.Domain.Common
     {
         private readonly List<DomainEvent> _domainEvents = new();
         
-        public IReadOnlyCollection<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
+        public virtual IReadOnlyCollection<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
         
-        protected void AddDomainEvent(DomainEvent domainEvent)
+        protected void AddDomainEvent(DomainEvent eventItem)
         {
-            _domainEvents.Add(domainEvent);
+            _domainEvents.Add(eventItem);
+        }
+
+        public void RemoveDomainEvent(DomainEvent eventItem)
+        {
+            _domainEvents.Remove(eventItem);
         }
         
         public void ClearDomainEvents()

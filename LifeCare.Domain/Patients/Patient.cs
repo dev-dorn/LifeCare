@@ -24,8 +24,12 @@ namespace LifeCare.Domain.Patients
         public string GuardianName { get; private set; }
         public string GuardianRelationship { get; private set; }
         public string GuardianPhone { get; private set; }
+        //Computed properties
         
         public int Age => CalculateAge();
+        public bool IsMinor => Age < 18;
+        public string FullName => $"{FirstName}{LastName}";
+        
         public bool RequiresGuardian => Age < 18;
         
         private Patient() { }
@@ -38,7 +42,12 @@ namespace LifeCare.Domain.Patients
             string gender,
             string phoneNumber,
             string mrn,
-            string createdBy)
+            string createdBy,
+            string city,
+            string state,
+            string zipCode,
+            string email
+            )
         {
             ValidateInput(nationalId, firstName, lastName, dateOfBirth, gender, phoneNumber);
             
@@ -61,6 +70,66 @@ namespace LifeCare.Domain.Patients
             
             return patient;
         }
+        // Add this method to your Patient class
+        public static Patient CreateForSeed(
+            Guid id,
+            string mrn,
+            string nationalId,
+            string firstName,
+            string lastName,
+            DateTime dateOfBirth,
+            string gender,
+            string phoneNumber,
+            string email,
+            string street,
+            string city,
+            string state,
+            string zipCode,
+            DateTime createdAt,
+            string createdBy,
+            string guardianName = null,
+            string guardianRelationship = null,
+            string guardianPhone = null)
+        {
+            // Basic validation
+            if (string.IsNullOrWhiteSpace(nationalId)) 
+                throw new DomainException("National ID is required");
+            if (string.IsNullOrWhiteSpace(firstName)) 
+                throw new DomainException("First name is required");
+            if (string.IsNullOrWhiteSpace(lastName)) 
+                throw new DomainException("Last name is required");
+            if (string.IsNullOrWhiteSpace(phoneNumber)) 
+                throw new DomainException("Phone number is required");
+            if (dateOfBirth > DateTime.UtcNow) 
+                throw new DomainException("Date of birth cannot be in the future");
+    
+            var patient = new Patient
+            {
+                Id = id,
+                MRN = mrn,
+                NationalId = nationalId.Trim(),
+                FirstName = firstName.Trim(),
+                LastName = lastName.Trim(),
+                DateOfBirth = dateOfBirth,
+                Gender = gender,
+                PhoneNumber = phoneNumber.Trim(),
+                Email = email?.Trim() ?? string.Empty,
+                Street = street?.Trim() ?? string.Empty,
+                City = city?.Trim() ?? string.Empty,
+                State = state?.Trim() ?? string.Empty,
+                ZipCode = zipCode?.Trim() ?? string.Empty,
+                Status = PatientStatus.AwaitingTriage,
+                CreatedAt = createdAt,
+                CreatedBy = createdBy,
+                GuardianName = guardianName?.Trim() ?? string.Empty,
+                GuardianRelationship = guardianRelationship?.Trim() ?? string.Empty,
+                GuardianPhone = guardianPhone?.Trim() ?? string.Empty
+            };
+    
+            return patient;
+        }
+        
+        //Factory method for Api/commands(with optional
         
         private static void ValidateInput(
             string nationalId,

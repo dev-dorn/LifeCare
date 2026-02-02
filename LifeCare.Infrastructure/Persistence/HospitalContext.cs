@@ -1,3 +1,4 @@
+using LifeCare.Domain.Common;
 using Microsoft.EntityFrameworkCore;
 using LifeCare.Domain.Patients;
 
@@ -14,10 +15,12 @@ namespace LifeCare.Infrastructure.Persistence
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Ignore<DomainEvent>();
             
             modelBuilder.Entity<Patient>(entity =>
             {
                 entity.HasKey(p => p.Id);
+                entity.Ignore(p => p.DomainEvents);
                 
                 entity.Property(p => p.MRN)
                     .IsRequired()
