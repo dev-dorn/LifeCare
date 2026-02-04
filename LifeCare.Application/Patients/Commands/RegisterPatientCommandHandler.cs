@@ -58,8 +58,14 @@ namespace LifeCare.Application.Patients.Commands
             request.ReceptionistId,
             request.City,
             request.State,
+            request.ZipCode,
             request.Email,
-            request.ZipCode);
+            request.Guardian != null
+                ? $"{request.Guardian.FirstName} {request.Guardian.LastName}"
+                : null,
+            request.Guardian?.Relationship,
+            request.Guardian?.PhoneNumber
+            );
 
         // Optional contact info
         patient.UpdateContactInfo(
@@ -70,22 +76,7 @@ namespace LifeCare.Application.Patients.Commands
             request.ZipCode);
 
         // Guardian logic (matches domain)
-        if (patient.RequiresGuardian)
-        {
-            if (request.Guardian == null)
-            {
-                return RegisterPatientResult.Failure(
-                    "Guardian information is required for patients under 18 years old");
-            }
-
-            var guardianFullName =
-                $"{request.Guardian.FirstName} {request.Guardian.LastName}";
-
-            patient.AssignGuardian(
-                guardianFullName,
-                request.Guardian.Relationship,
-                request.Guardian.PhoneNumber);
-        }
+        
 
         await _patientRepository.AddAsync(patient);
         await _patientRepository.SaveChangesAsync(cancellationToken);

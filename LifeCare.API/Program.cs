@@ -7,9 +7,14 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+    {
+        options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
+    }
+    );
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 
 // Get connection string from configuration
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
@@ -17,7 +22,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 // Add database context
 builder.Services.AddDbContext<HospitalDbContext>(options =>
-    options.UseSqlite(connectionString));
+    options.UseNpgsql(connectionString));
 
 // Add repositories
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
@@ -78,7 +83,7 @@ using (var scope = app.Services.CreateScope())
         var context = services.GetRequiredService<HospitalDbContext>();
         
         // Ensure database is created
-        await context.Database.EnsureCreatedAsync();
+        await context.Database.MigrateAsync();
         
         // Seed initial data
         await SeedDataAsync(context);

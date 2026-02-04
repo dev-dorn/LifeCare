@@ -18,19 +18,18 @@ namespace LifeCare.Domain.Patients
         public string City { get; private set; }
         public string State { get; private set; }
         public string ZipCode { get; private set; }
-        public PatientStatus Status { get; private set; }
+        public PatientStatus? Status { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public string CreatedBy { get; private set; }
-        public string GuardianName { get; private set; }
-        public string GuardianRelationship { get; private set; }
-        public string GuardianPhone { get; private set; }
+        public string? GuardianName { get; private set; }
+        public string? GuardianRelationship { get; private set; }
+        public string? GuardianPhone { get; private set; }
         //Computed properties
         
         public int Age => CalculateAge();
-        public bool IsMinor => Age < 18;
-        public string FullName => $"{FirstName}{LastName}";
+        public string FullName => $"{FirstName} {LastName}";
         
-        public bool RequiresGuardian => Age < 18;
+        public bool RequiresGuardian => Age < 13;
         
         private Patient() { }
         
@@ -46,7 +45,10 @@ namespace LifeCare.Domain.Patients
             string city,
             string state,
             string zipCode,
-            string email
+            string email,
+            string? guardianName,
+            string? guardianRelationship,
+            string? guardianPhone
             )
         {
             ValidateInput(nationalId, firstName, lastName, dateOfBirth, gender, phoneNumber);
@@ -65,7 +67,13 @@ namespace LifeCare.Domain.Patients
                 CreatedAt = DateTime.UtcNow,
                 CreatedBy = createdBy
             };
-            
+            if (patient.RequiresGuardian)
+            {
+                patient.AssignGuardian(
+                    guardianName,
+                    guardianRelationship,
+                    guardianPhone);
+            }
             patient.AddDomainEvent(new PatientRegisteredEvent(patient.Id, patient.MRN));
             
             return patient;
@@ -193,10 +201,14 @@ namespace LifeCare.Domain.Patients
                 
             if (string.IsNullOrWhiteSpace(name))
                 throw new DomainException("Guardian name is required");
+            if (string.IsNullOrWhiteSpace(relationship))
+                throw new DomainException("Guardian relationship is required");
+            if (string.IsNullOrWhiteSpace(phone))
+                throw new DomainException("Guardian phone is required");
                 
             GuardianName = name.Trim();
-            GuardianRelationship = relationship?.Trim();
-            GuardianPhone = phone?.Trim();
+            GuardianRelationship = relationship.Trim();
+            GuardianPhone = phone.Trim();
         }
         
         private bool IsValidEmail(string email)

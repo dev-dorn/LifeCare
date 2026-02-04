@@ -8,17 +8,17 @@ namespace LifeCare.Application.Patients.Dtos
     {
         public Guid Id { get; set; }
         public required string Mrn { get; set; }
-        public required string NationalId { get; set; }
+        public string NationalId { get; set; }
         public required string FirstName { get; set; }
         public required string LastName { get; set; }
         public string FullName => $"{FirstName} {LastName}";
         public DateTime DateOfBirth { get; set; }
         public int Age { get; set; }
-        public required string Gender { get; set; }
-        public required string PhoneNumber { get; set; }
-        public required string Email { get; set; }
-        public required string Street { get; set; }
-        public required string City { get; set; }
+        public string Gender { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Email { get; set; }
+        public string Street { get; set; }
+        public string City { get; set; }
         public string State { get; set; }
         public string ZipCode { get; set; }
         public string Status { get; set; }

@@ -2,6 +2,7 @@ namespace LifeCare.Domain.Patients
 {
     public enum PatientStatus
     {
+        Unknown = 0,
         AwaitingTriage = 1,
         InTriage = 2,
         InConsultation = 3,

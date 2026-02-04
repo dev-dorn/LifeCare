@@ -82,16 +82,23 @@ namespace LifeCare.Infrastructure.Persistence
                     .HasMaxLength(100);
                     
                 entity.Property(p => p.GuardianName)
+                    .IsRequired(false)
                     .HasMaxLength(100);
                     
                 entity.Property(p => p.GuardianRelationship)
+                    .IsRequired(false)
                     .HasMaxLength(50);
                     
                 entity.Property(p => p.GuardianPhone)
+                    .IsRequired(false)
                     .HasMaxLength(20);
                     
                 // Indexes
-                entity.HasIndex(p => p.Status);
+                entity.Property(p => p.Status)
+                    .HasConversion<string>()
+                    .HasDefaultValue(PatientStatus.AwaitingTriage);
+                    //.HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None); // for SQL Server
+
                 entity.HasIndex(p => new { p.LastName, p.FirstName });
                 entity.HasIndex(p => p.CreatedAt);
             });
