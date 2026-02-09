@@ -14,10 +14,7 @@ namespace LifeCare.Infrastructure.Repositories
             _context = context;
         }
         
-        public async Task<Patient> GetByIdAsync(Guid id)
-        {
-            return await _context.Patients.FindAsync(id);
-        }
+      
         
         public async Task<Patient> GetByMrnAsync(string mrn)
         {
@@ -90,5 +87,12 @@ namespace LifeCare.Infrastructure.Repositories
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
         }
+
+        public async Task<Patient?> GetByIdAsync(Guid id)
+        {
+            return await _context.Patients
+                .FirstOrDefaultAsync(p => p.Id == id);
+        }
+        
     }
 }

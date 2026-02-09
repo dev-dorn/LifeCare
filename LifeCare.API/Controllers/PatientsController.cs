@@ -1,9 +1,9 @@
 // LifeCare.API/Controllers/PatientsController.cs
 
 using System.ComponentModel.DataAnnotations;
+using LifeCare.Application.Patients.Commands;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
-using LifeCare.Application.Patients.Commands;
 using LifeCare.Application.Patients.Queries;
 using LifeCare.Application.Patients.Dtos;
 using Microsoft.AspNetCore.Http;
@@ -96,7 +96,7 @@ namespace LifeCare.API.Controllers
         // -----------------------------
         // GET PATIENT BY MRN
         // -----------------------------
-        [HttpGet("{mrn}")]
+        [HttpGet("mrn/{mrn}")]
         [ProducesResponseType(typeof(PatientDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetPatientByMrn(string mrn)
@@ -144,6 +144,24 @@ namespace LifeCare.API.Controllers
                 Data = patients
             });
         }
+        
+        // 
+        // GET PATIENTS BY ID
+        //
+        [HttpGet("{id:guid}")]  // Only matches GUIDs
+        public async Task<IActionResult> GetPatient(Guid id)
+        {
+            var query = new GetPatientByIdQuery(id);
+            var patient = await _mediator.Send(query);
+    
+            if (patient == null)
+            {
+                return NotFound(new { message = $"Patient with ID {id} not found" });
+            }
+    
+            return Ok(new { success = true, data = patient });
+        }
+        
     }
 
     // =============================
