@@ -354,4 +354,4 @@ ef-migration: ## Create EF migration
 	@read -p "Migration name: " name; \
 	docker-compose exec life-care-api dotnet ef migrations add $$name \
 		--project /src/LifeCare.Infrastructure \
-		--startup-project /src/LifeCare.API
+		--startup-project /src/LifeCare.API 

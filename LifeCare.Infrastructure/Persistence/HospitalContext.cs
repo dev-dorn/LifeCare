@@ -11,7 +11,12 @@ namespace LifeCare.Infrastructure.Persistence
         public HospitalDbContext(DbContextOptions<HospitalDbContext> options) : base(options)
         {
         }
-        
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
