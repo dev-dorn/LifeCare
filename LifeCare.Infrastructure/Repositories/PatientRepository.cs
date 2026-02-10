@@ -99,5 +99,26 @@ namespace LifeCare.Infrastructure.Repositories
             return await _context.Patients
                 .FirstOrDefaultAsync(p => p.PhoneNumber == phoneNumber);
         }
+
+        public async Task<IReadOnlyList<Patient>> SearchPatientsAsync(string? name, string? city)
+        {
+            IQueryable<Patient> query = _context.Patients;
+
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                query = query.Where(p =>
+                    p.FirstName.Contains(name) ||
+                    p.LastName.Contains(name)
+                );
+                
+            }
+
+            if (!string.IsNullOrWhiteSpace(city))
+            {
+                query = query.Where(p => p.City == city);
+            }
+            return await query.ToListAsync();
+        }
+
     }
 }

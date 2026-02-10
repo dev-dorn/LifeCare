@@ -177,6 +177,17 @@ namespace LifeCare.API.Controllers
             return Ok(new{success = true, data = patient });
 
         }
+        //
+        // SEARCH PATIENTS
+        //
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchPatients([FromQuery] string? name, [FromQuery] string? city)
+        {
+            var query = new SearchPatientQuery(name, city);
+            var patients = await _mediator.Send(query);
+    
+            return Ok(new { success = true, data = patients });
+        }
         
     }
 

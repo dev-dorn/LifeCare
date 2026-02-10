@@ -47,6 +47,8 @@ namespace LifeCare.Infrastructure.Repositories
             );
         }
 
+
+
         public Task<int> GetNextMrnSequenceAsync()
         {
             var currentYear = DateTime.Now.Year;
@@ -77,6 +79,7 @@ namespace LifeCare.Infrastructure.Repositories
                 _patients.Remove(existing);
                 _patients.Add(patient);
             }
+
             return Task.CompletedTask;
         }
 
@@ -84,6 +87,31 @@ namespace LifeCare.Infrastructure.Repositories
         {
             return Task.CompletedTask;
         }
+
+        public Task<IReadOnlyList<Patient>> SearchPatientsAsync(string? name, string? city)
+        {
+            IEnumerable<Patient> query = _patients;
+
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                query = query.Where(p =>
+                    p.FirstName.Contains(name, StringComparison.OrdinalIgnoreCase) ||
+                    p.LastName.Contains(name, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (!string.IsNullOrWhiteSpace(city))
+            {
+                query = query.Where(p =>
+                    p.City.Contains(city, StringComparison.OrdinalIgnoreCase));
+            }
+
+            var result = query
+                .OrderByDescending(p => p.CreatedAt)
+                .ToList();
+
+            return Task.FromResult<IReadOnlyList<Patient>>(result);
+        }
+
 
         // -----------------------
         // MRN PARSER (PRIVATE)
@@ -102,4 +130,6 @@ namespace LifeCare.Infrastructure.Repositories
             return (year, sequence);
         }
     }
+
 }
+    
