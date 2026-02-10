@@ -1,6 +1,7 @@
 // LifeCare.API/Controllers/PatientsController.cs
 
 using System.ComponentModel.DataAnnotations;
+using LifeCare.API.Controllers.Requests;
 using LifeCare.Application.Patients.Commands;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
@@ -188,7 +189,38 @@ namespace LifeCare.API.Controllers
     
             return Ok(new { success = true, data = patients });
         }
+        //
+        //PUT /api/patients/{id}
+        //
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdatePatient(Guid id, [FromBody] UpdatePatientRequest request)
+        {
+            var command = new UpdatePatientCommand
+            {
+                Id = id,
+                NationalId = request.NationalId,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                DateOfBirth = request.DateOfBirth,
+                Gender = request.Gender,
+                PhoneNumber = request.PhoneNumber,
+                Email = request.Email,
+                Street = request.Street,
+                City = request.City,
+                State = request.State,
+                ZipCode = request.ZipCode,
+                GuardianName = request.GuardianName,
+                GuardianRelationship = request.GuardianRelationship,
+                GuardianPhone = request.GuardianPhone
+            };
+    
+            var result = await _mediator.Send(command);
+    
+            if (!result.IsSuccess)
+                return NotFound(new { success = false, error = result.Error });
         
+            return Ok(new { success = true, data = result.Data });
+        }
     }
 
     // =============================

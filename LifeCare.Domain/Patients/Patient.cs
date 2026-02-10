@@ -193,7 +193,23 @@ namespace LifeCare.Domain.Patients
             State = state?.Trim();
             ZipCode = zipCode?.Trim();
         }
-        
+
+        public void UpdateBasicInfo(string nationalId, string firstName, string lastName, string gender, DateTime dob)
+        {
+            NationalId = nationalId;
+            FirstName = firstName;
+            LastName = lastName;
+            DateOfBirth = dob;
+            Gender = gender;
+
+        }
+
+        public void UpdateGuardianInfo(string? name, string? relationship, string? phone)
+        {
+            GuardianName = name;
+            GuardianRelationship = relationship;
+            GuardianPhone = phone;
+        }
         public void AssignGuardian(string name, string relationship, string phone)
         {
             if (!RequiresGuardian)
