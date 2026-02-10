@@ -17,5 +17,8 @@ namespace LifeCare.Application.Interfaces.Repositories
         Task UpdateAsync(Patient patient);
         Task SaveChangesAsync(CancellationToken cancellationToken = default);
         Task<List<Patient>> GetAllAsync();
+        Task<Patient?> GetByPhoneNumberAsync(string phoneNumber);
+
+
     }
 }
