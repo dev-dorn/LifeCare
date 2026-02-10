@@ -161,6 +161,22 @@ namespace LifeCare.API.Controllers
     
             return Ok(new { success = true, data = patient });
         }
+        //
+        // GET PATIENT BY PHONE NUMBER
+        //
+        [HttpGet("phone/{phoneNumber}")]
+        public async Task<IActionResult> GetPatientByPhoneNumber(string phoneNumber)
+        {
+            var query = new GetPatientByPhoneQuery(phoneNumber);
+            var patient = await _mediator.Send(query);
+
+            if (patient == null)
+            {
+                return NotFound(new { message = $"Patient with PhoneNumber {phoneNumber} not found" });
+            }
+            return Ok(new{success = true, data = patient });
+
+        }
         
     }
 

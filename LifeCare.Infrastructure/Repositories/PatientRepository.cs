@@ -93,6 +93,11 @@ namespace LifeCare.Infrastructure.Repositories
             return await _context.Patients
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
-        
+
+        public async Task<Patient?> GetByPhoneNumberAsync(string phoneNumber)
+        {
+            return await _context.Patients
+                .FirstOrDefaultAsync(p => p.PhoneNumber == phoneNumber);
+        }
     }
 }

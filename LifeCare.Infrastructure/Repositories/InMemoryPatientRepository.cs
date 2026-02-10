@@ -33,6 +33,13 @@ namespace LifeCare.Infrastructure.Repositories
             return Task.FromResult(_patients.ToList());
         }
 
+        public Task<Patient?> GetByPhoneNumberAsync(string phoneNumber)
+        {
+            return Task.FromResult(
+                _patients.FirstOrDefault(p => p.PhoneNumber == phoneNumber)
+            );
+        }
+
         public Task<Patient?> GetByIdAsync(Guid id)
         {
             return Task.FromResult(
