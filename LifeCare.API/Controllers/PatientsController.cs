@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using LifeCare.Application.Patients.Queries;
 using LifeCare.Application.Patients.Dtos;
+using LifeCare.Domain.Patients;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -221,6 +222,32 @@ namespace LifeCare.API.Controllers
         
             return Ok(new { success = true, data = result.Data });
         }
+        [HttpPatch("{id}/status")]
+        public async Task<IActionResult> UpdatePatientStatus(Guid id, [FromBody] UpdateStatusRequest request)
+        {
+            // Convert string → enum
+            if (!Enum.TryParse<PatientStatus>(request.NewStatus, true, out var status))
+                return BadRequest(new { success = false, error = "Invalid patient status" });
+
+            // Create command with enum
+            var command = new UpdatePatientStatusCommand(
+                id,
+                status,
+                request.Notes,
+                request.ChangedBy,
+                request.ChangedAt
+            );
+
+            var result = await _mediator.Send(command);
+
+            if (!result.IsSuccess)
+                return NotFound(new { success = false, error = result.Error });
+
+            return Ok(new { success = true, data = result.Data });
+        }
+
+
+       
     }
 
     // =============================

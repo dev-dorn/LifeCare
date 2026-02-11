@@ -3,6 +3,7 @@ using LifeCare.Infrastructure.Persistence;
 using LifeCare.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using LifeCare.Application.Interfaces.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,8 @@ builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 
 // Add MediatR
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.Load("LifeCare.Application")));
+builder.Services.AddScoped<IApplicationDbContext>(
+    provider => provider.GetRequiredService<HospitalDbContext>());
 
 // Add CORS
 builder.Services.AddCors(options =>

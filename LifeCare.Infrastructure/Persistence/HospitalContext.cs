@@ -1,13 +1,16 @@
+using LifeCare.Application.Interfaces.Persistence;
 using LifeCare.Domain.Common;
 using Microsoft.EntityFrameworkCore;
 using LifeCare.Domain.Patients;
 
 namespace LifeCare.Infrastructure.Persistence
 {
-    public class HospitalDbContext : DbContext
+    public class HospitalDbContext : DbContext, IApplicationDbContext
     {
         public DbSet<Patient> Patients { get; set; }
-        
+        public DbSet<PatientStatusHistory> PatientStatusHistory { get; set; }
+        public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+            => base.SaveChangesAsync(cancellationToken);
         public HospitalDbContext(DbContextOptions<HospitalDbContext> options) : base(options)
         {
         }
@@ -17,6 +20,9 @@ namespace LifeCare.Infrastructure.Persistence
             base.OnConfiguring(optionsBuilder);
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
+
+      
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -106,6 +112,13 @@ namespace LifeCare.Infrastructure.Persistence
 
                 entity.HasIndex(p => new { p.LastName, p.FirstName });
                 entity.HasIndex(p => p.CreatedAt);
+            });
+            modelBuilder.Entity<PatientStatusHistory>(entity =>
+            {
+                entity.HasKey(h => h.Id);
+                entity.Property(h => h.Status).HasConversion<string>();
+                entity.HasIndex(h => h.PatientId);
+                entity.HasIndex(h => h.ChangedAt);
             });
         }
     }

@@ -6,6 +6,7 @@ namespace LifeCare.Infrastructure.Repositories
     public class InMemoryPatientRepository : IPatientRepository
     {
         private readonly List<Patient> _patients = new();
+        private readonly List<PatientStatusHistory> _patientStatusHistory = new();
 
         public Task<Patient?> GetByMrnAsync(string mrn)
         {
@@ -129,6 +130,14 @@ namespace LifeCare.Infrastructure.Repositories
 
             return (year, sequence);
         }
+
+        public Task AddStatusHistoryAsync(PatientStatusHistory history)
+        {
+            _patientStatusHistory.Add(history);
+            return Task.CompletedTask;
+        }
+        
+        
     }
 
 }

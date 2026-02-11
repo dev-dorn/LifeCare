@@ -37,6 +37,7 @@ namespace LifeCare.Application.Patients.Commands
                 request.State,
                 request.ZipCode
             );
+            
 
             if (request.GuardianName != null)
             {

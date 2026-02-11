@@ -119,6 +119,10 @@ namespace LifeCare.Infrastructure.Repositories
             }
             return await query.ToListAsync();
         }
+        public async Task AddStatusHistoryAsync(PatientStatusHistory history) 
+        {
+            await _context.PatientStatusHistory.AddAsync(history);
+        }
 
     }
 }

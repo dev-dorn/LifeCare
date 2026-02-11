@@ -204,6 +204,11 @@ namespace LifeCare.Domain.Patients
 
         }
 
+        public void UpdateStatus(PatientStatus newStatus)
+        {
+            Status = newStatus;
+        }
+
         public void UpdateGuardianInfo(string? name, string? relationship, string? phone)
         {
             GuardianName = name;
