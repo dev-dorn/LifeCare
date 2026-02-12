@@ -3,6 +3,7 @@ using LifeCare.Infrastructure.Persistence;
 using LifeCare.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using LifeCare.Application.Interfaces.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,8 @@ builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 
 // Add MediatR
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.Load("LifeCare.Application")));
+builder.Services.AddScoped<IApplicationDbContext>(
+    provider => provider.GetRequiredService<HospitalDbContext>());
 
 // Add CORS
 builder.Services.AddCors(options =>
@@ -127,9 +130,9 @@ static async Task SeedDataAsync(HospitalDbContext context)
                 gender: "Male",
                 phoneNumber: "+1-555-1234",
                 email: "john.doe@example.com",
-                street: "123 Main St",
-                city: "Anytown",
-                state: "CA",
+                county: "123 Main St",
+                subCounty: "Anytown",
+                country: "CA",
                 zipCode: "12345",
                 createdAt: DateTime.UtcNow.AddDays(-1),
                 createdBy: "System"
@@ -146,9 +149,9 @@ static async Task SeedDataAsync(HospitalDbContext context)
                 gender: "Female",
                 phoneNumber: "+1-555-5678",
                 email: "",
-                street: "",
-                city: "",
-                state: "",
+                county: "",
+                subCounty: "",
+                country: "",
                 zipCode: "",
                 createdAt: DateTime.UtcNow.AddHours(-12),
                 createdBy: "System"
@@ -165,9 +168,9 @@ static async Task SeedDataAsync(HospitalDbContext context)
                 gender: "Female",
                 phoneNumber: "+1-555-9012",
                 email: "emma.parent@example.com",
-                street: "789 Pine St",
-                city: "Sometown",
-                state: "TX",
+                county: "789 Pine St",
+                subCounty: "Sometown",
+                country: "TX",
                 zipCode: "67890",
                 createdAt: DateTime.UtcNow.AddHours(-6),
                 createdBy: "System",

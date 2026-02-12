@@ -55,9 +55,10 @@ namespace LifeCare.Application.Patients.Commands
             request.Gender,
             request.PhoneNumber,
             mrn,
-            request.ReceptionistId,
-            request.City,
-            request.State,
+            request.ReceptionistId, 
+            request.County,
+            request.SubCounty,
+            request.Country,
             request.ZipCode,
             request.Email,
             request.Guardian != null
@@ -70,9 +71,9 @@ namespace LifeCare.Application.Patients.Commands
         // Optional contact info
         patient.UpdateContactInfo(
             request.Email,
-            request.Street,
-            request.City,
-            request.State,
+            request.County,
+            request.SubCounty,
+            request.Country,
             request.ZipCode);
 
         // Guardian logic (matches domain)

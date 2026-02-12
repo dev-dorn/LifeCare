@@ -1,13 +1,16 @@
+using LifeCare.Application.Interfaces.Persistence;
 using LifeCare.Domain.Common;
 using Microsoft.EntityFrameworkCore;
 using LifeCare.Domain.Patients;
 
 namespace LifeCare.Infrastructure.Persistence
 {
-    public class HospitalDbContext : DbContext
+    public class HospitalDbContext : DbContext, IApplicationDbContext
     {
         public DbSet<Patient> Patients { get; set; }
-        
+        public DbSet<PatientStatusHistory> PatientStatusHistory { get; set; }
+        public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+            => base.SaveChangesAsync(cancellationToken);
         public HospitalDbContext(DbContextOptions<HospitalDbContext> options) : base(options)
         {
         }
@@ -17,6 +20,9 @@ namespace LifeCare.Infrastructure.Persistence
             base.OnConfiguring(optionsBuilder);
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
+
+      
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -44,10 +50,12 @@ namespace LifeCare.Infrastructure.Persistence
                 entity.Property(p => p.FirstName)
                     .IsRequired()
                     .HasMaxLength(100);
+                
                     
                 entity.Property(p => p.LastName)
                     .IsRequired()
                     .HasMaxLength(100);
+                entity.HasIndex(p => new { p.LastName, p.FirstName });
                     
                 entity.Property(p => p.DateOfBirth)
                     .IsRequired();
@@ -59,17 +67,19 @@ namespace LifeCare.Infrastructure.Persistence
                 entity.Property(p => p.PhoneNumber)
                     .IsRequired()
                     .HasMaxLength(20);
+                entity.HasIndex(p => p.PhoneNumber);
+
                     
                 entity.Property(p => p.Email)
                     .HasMaxLength(255);
                     
-                entity.Property(p => p.Street)
+                entity.Property(p => p.County)
                     .HasMaxLength(200);
                     
-                entity.Property(p => p.City)
+                entity.Property(p => p.SubCounty)
                     .HasMaxLength(100);
                     
-                entity.Property(p => p.State)
+                entity.Property(p => p.Country)
                     .HasMaxLength(50);
                     
                 entity.Property(p => p.ZipCode)
@@ -78,9 +88,15 @@ namespace LifeCare.Infrastructure.Persistence
                 entity.Property(p => p.Status)
                     .HasConversion<string>()
                     .HasDefaultValue(PatientStatus.AwaitingTriage);
+                entity.HasIndex(p => p.Status);
+                entity.HasIndex(p => new { p.Status, p.CreatedAt });
+
+
                     
                 entity.Property(p => p.CreatedAt)
                     .IsRequired();
+                entity.HasIndex(p => p.CreatedAt);
+
                     
                 entity.Property(p => p.CreatedBy)
                     .IsRequired()
@@ -97,15 +113,17 @@ namespace LifeCare.Infrastructure.Persistence
                 entity.Property(p => p.GuardianPhone)
                     .IsRequired(false)
                     .HasMaxLength(20);
+                
                     
-                // Indexes
-                entity.Property(p => p.Status)
-                    .HasConversion<string>()
-                    .HasDefaultValue(PatientStatus.AwaitingTriage);
-                    //.HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None); // for SQL Server
-
-                entity.HasIndex(p => new { p.LastName, p.FirstName });
-                entity.HasIndex(p => p.CreatedAt);
+                
+               
+            });
+            modelBuilder.Entity<PatientStatusHistory>(entity =>
+            {
+                entity.HasKey(h => h.Id);
+                entity.Property(h => h.Status).HasConversion<string>();
+                entity.HasIndex(h => h.PatientId);
+                entity.HasIndex(h => h.ChangedAt);
             });
         }
     }

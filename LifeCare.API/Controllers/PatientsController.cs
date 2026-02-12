@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using LifeCare.Application.Patients.Queries;
 using LifeCare.Application.Patients.Dtos;
+using LifeCare.Domain.Patients;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -47,9 +48,9 @@ namespace LifeCare.API.Controllers
                 Gender = request.Gender,
                 PhoneNumber = request.PhoneNumber,
                 Email = request.Email,
-                Street = request.Street,
-                City = request.City,
-                State = request.State,
+                County = request.County,
+                SubCounty = request.SubCounty,
+                Country = request.Country,
                 ZipCode = request.ZipCode,
                 ReceptionistId = User?.Identity?.Name ?? "System",
 
@@ -205,9 +206,9 @@ namespace LifeCare.API.Controllers
                 Gender = request.Gender,
                 PhoneNumber = request.PhoneNumber,
                 Email = request.Email,
-                Street = request.Street,
-                City = request.City,
-                State = request.State,
+                County = request.County,
+                SubCounty = request.SubCounty,
+                Country = request.Country,
                 ZipCode = request.ZipCode,
                 GuardianName = request.GuardianName,
                 GuardianRelationship = request.GuardianRelationship,
@@ -221,6 +222,32 @@ namespace LifeCare.API.Controllers
         
             return Ok(new { success = true, data = result.Data });
         }
+        [HttpPatch("{id}/status")]
+        public async Task<IActionResult> UpdatePatientStatus(Guid id, [FromBody] UpdateStatusRequest request)
+        {
+            // Convert string → enum
+            if (!Enum.TryParse<PatientStatus>(request.NewStatus, true, out var status))
+                return BadRequest(new { success = false, error = "Invalid patient status" });
+
+            // Create command with enum
+            var command = new UpdatePatientStatusCommand(
+                id,
+                status,
+                request.Notes,
+                request.ChangedBy,
+                request.ChangedAt
+            );
+
+            var result = await _mediator.Send(command);
+
+            if (!result.IsSuccess)
+                return NotFound(new { success = false, error = result.Error });
+
+            return Ok(new { success = true, data = result.Data });
+        }
+
+
+       
     }
 
     // =============================
@@ -247,9 +274,9 @@ namespace LifeCare.API.Controllers
         public string PhoneNumber { get; set; }
 
         public string Email { get; set; }
-        public string Street { get; set; }
-        public string City { get; set; }
-        public string State { get; set; }
+        public string County { get; set; }
+        public string SubCounty { get; set; }
+        public string Country { get; set; }
         public string ZipCode { get; set; }
 
         public GuardianRequest Guardian { get; set; }

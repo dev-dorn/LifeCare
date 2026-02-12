@@ -115,9 +115,13 @@ namespace LifeCare.Infrastructure.Repositories
 
             if (!string.IsNullOrWhiteSpace(city))
             {
-                query = query.Where(p => p.City == city);
+                query = query.Where(p => p.SubCounty == city);
             }
             return await query.ToListAsync();
+        }
+        public async Task AddStatusHistoryAsync(PatientStatusHistory history) 
+        {
+            await _context.PatientStatusHistory.AddAsync(history);
         }
 
     }
