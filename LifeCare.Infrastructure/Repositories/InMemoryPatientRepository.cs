@@ -41,12 +41,21 @@ namespace LifeCare.Infrastructure.Repositories
         }
 
 
+        public Task<Patient?> GetByPhoneNumberAsync(string phoneNumber)
+        {
+            return Task.FromResult(
+                _patients.FirstOrDefault(p => p.PhoneNumber == phoneNumber)
+            );
+        }
+
         public Task<Patient?> GetByIdAsync(Guid id)
         {
             return Task.FromResult(
                 _patients.FirstOrDefault(p => p.Id == id)
             );
         }
+
+
 
         public Task<int> GetNextMrnSequenceAsync()
         {
@@ -78,6 +87,7 @@ namespace LifeCare.Infrastructure.Repositories
                 _patients.Remove(existing);
                 _patients.Add(patient);
             }
+
             return Task.CompletedTask;
         }
 
@@ -125,6 +135,31 @@ namespace LifeCare.Infrastructure.Repositories
             return Task.CompletedTask;
         }
 
+        public Task<IReadOnlyList<Patient>> SearchPatientsAsync(string? name, string? city)
+        {
+            IEnumerable<Patient> query = _patients;
+
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                query = query.Where(p =>
+                    p.FirstName.Contains(name, StringComparison.OrdinalIgnoreCase) ||
+                    p.LastName.Contains(name, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (!string.IsNullOrWhiteSpace(city))
+            {
+                query = query.Where(p =>
+                    p.SubCounty.Contains(city, StringComparison.OrdinalIgnoreCase));
+            }
+
+            var result = query
+                .OrderByDescending(p => p.CreatedAt)
+                .ToList();
+
+            return Task.FromResult<IReadOnlyList<Patient>>(result);
+        }
+
+
         // -----------------------
         // MRN PARSER (PRIVATE)
         // -----------------------
@@ -141,5 +176,15 @@ namespace LifeCare.Infrastructure.Repositories
 
             return (year, sequence);
         }
+
+        public Task AddStatusHistoryAsync(PatientStatusHistory history)
+        {
+            _patientStatusHistory.Add(history);
+            return Task.CompletedTask;
+        }
+        
+        
     }
+
 }
+    

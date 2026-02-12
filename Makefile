@@ -352,6 +352,5 @@ format: ## Format code
 ef-migration: ## Create EF migration
 	@echo "$(BLUE)📦 Creating migration...$(NC)"
 	@read -p "Migration name: " name; \
-	docker-compose exec life-care-api dotnet ef migrations add $$name \
-		--project /src/LifeCare.Infrastructure \
-		--startup-project /src/LifeCare.API 
+	docker exec -it life-care-api dotnet ef migrations add &&name --project /src/LifeCare.Infrastructure --startup-project /src/LifeCare.API
+	
