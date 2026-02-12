@@ -7,6 +7,10 @@ namespace LifeCare.Infrastructure.Persistence
     public class HospitalDbContext : DbContext
     {
         public DbSet<Patient> Patients { get; set; }
+        public DbSet<PatientStatusHistory> PatientStatusHistory { get; set; }
+        public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+            => base.SaveChangesAsync(cancellationToken);
+
         
         public HospitalDbContext(DbContextOptions<HospitalDbContext> options) : base(options)
         {
@@ -48,6 +52,9 @@ namespace LifeCare.Infrastructure.Persistence
                 entity.Property(p => p.LastName)
                     .IsRequired()
                     .HasMaxLength(100);
+                entity.HasIndex(p => new { p.LastName, p.FirstName });
+
+                
                     
                 entity.Property(p => p.DateOfBirth)
                     .IsRequired();
@@ -59,17 +66,19 @@ namespace LifeCare.Infrastructure.Persistence
                 entity.Property(p => p.PhoneNumber)
                     .IsRequired()
                     .HasMaxLength(20);
+                entity.HasIndex(p => p.PhoneNumber);
+
                     
                 entity.Property(p => p.Email)
                     .HasMaxLength(255);
                     
-                entity.Property(p => p.Street)
+                entity.Property(p => p.County)
                     .HasMaxLength(200);
                     
-                entity.Property(p => p.City)
+                entity.Property(p => p.SubCounty)
                     .HasMaxLength(100);
                     
-                entity.Property(p => p.State)
+                entity.Property(p => p.Country)
                     .HasMaxLength(50);
                     
                 entity.Property(p => p.ZipCode)
@@ -78,6 +87,9 @@ namespace LifeCare.Infrastructure.Persistence
                 entity.Property(p => p.Status)
                     .HasConversion<string>()
                     .HasDefaultValue(PatientStatus.AwaitingTriage);
+                entity.HasIndex(p => p.Status);
+
+                
                     
                 entity.Property(p => p.CreatedAt)
                     .IsRequired();
@@ -102,10 +114,18 @@ namespace LifeCare.Infrastructure.Persistence
                 entity.Property(p => p.Status)
                     .HasConversion<string>()
                     .HasDefaultValue(PatientStatus.AwaitingTriage);
+                entity.HasIndex(p => new { p.Status, p.CreatedAt });
+
                     //.HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None); // for SQL Server
 
-                entity.HasIndex(p => new { p.LastName, p.FirstName });
-                entity.HasIndex(p => p.CreatedAt);
+                
+            });
+            modelBuilder.Entity<PatientStatusHistory>(entity =>
+            {
+                entity.HasKey(h => h.Id);
+                entity.Property(h => h.Status).HasConversion<string>();
+                entity.HasIndex(h => h.PatientId);
+                entity.HasIndex(h => h.ChangedAt);
             });
         }
     }
