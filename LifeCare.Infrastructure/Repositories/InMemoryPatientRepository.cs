@@ -33,12 +33,7 @@ namespace LifeCare.Infrastructure.Repositories
         {
             return Task.FromResult(_patients.ToList());
         }
-        public Task<Patient?> GetByPhoneNumberAsync(string phoneNumber)
-        {
-            return Task.FromResult(
-                _patients.FirstOrDefault(p => p.PhoneNumber == phoneNumber)
-            );
-        }
+      
 
 
         public Task<Patient?> GetByPhoneNumberAsync(string phoneNumber)
@@ -99,36 +94,10 @@ namespace LifeCare.Infrastructure.Repositories
                 .ToList();
             return Task.FromResult(recentPatients);
         }
-        public Task<IReadOnlyList<Patient>> SearchPatientsAsync(string? name, string? city)
-        {
-            IEnumerable<Patient> query = _patients;
-
-            if (!string.IsNullOrWhiteSpace(name))
-            {
-                query = query.Where(p =>
-                    p.FirstName.Contains(name, StringComparison.OrdinalIgnoreCase) ||
-                    p.LastName.Contains(name, StringComparison.OrdinalIgnoreCase));
-            }
-
-            if (!string.IsNullOrWhiteSpace(city))
-            {
-                query = query.Where(p =>
-                    p.SubCounty.Contains(city, StringComparison.OrdinalIgnoreCase));
-            }
-
-            var result = query
-                .OrderByDescending(p => p.CreatedAt)
-                .ToList();
-
-            return Task.FromResult<IReadOnlyList<Patient>>(result);
-        }
         
         
-        public Task AddStatusHistoryAsync(PatientStatusHistory history)
-        {
-            _patientStatusHistory.Add(history);
-            return Task.CompletedTask;
-        }
+        
+      
 
         public Task SaveChangesAsync(CancellationToken cancellationToken)
         {
