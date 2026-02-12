@@ -50,10 +50,12 @@ namespace LifeCare.Infrastructure.Persistence
                 entity.Property(p => p.FirstName)
                     .IsRequired()
                     .HasMaxLength(100);
+                
                     
                 entity.Property(p => p.LastName)
                     .IsRequired()
                     .HasMaxLength(100);
+                entity.HasIndex(p => new { p.LastName, p.FirstName });
                     
                 entity.Property(p => p.DateOfBirth)
                     .IsRequired();
@@ -65,17 +67,19 @@ namespace LifeCare.Infrastructure.Persistence
                 entity.Property(p => p.PhoneNumber)
                     .IsRequired()
                     .HasMaxLength(20);
+                entity.HasIndex(p => p.PhoneNumber);
+
                     
                 entity.Property(p => p.Email)
                     .HasMaxLength(255);
                     
-                entity.Property(p => p.Street)
+                entity.Property(p => p.County)
                     .HasMaxLength(200);
                     
-                entity.Property(p => p.City)
+                entity.Property(p => p.SubCounty)
                     .HasMaxLength(100);
                     
-                entity.Property(p => p.State)
+                entity.Property(p => p.Country)
                     .HasMaxLength(50);
                     
                 entity.Property(p => p.ZipCode)
@@ -84,9 +88,15 @@ namespace LifeCare.Infrastructure.Persistence
                 entity.Property(p => p.Status)
                     .HasConversion<string>()
                     .HasDefaultValue(PatientStatus.AwaitingTriage);
+                entity.HasIndex(p => p.Status);
+                entity.HasIndex(p => new { p.Status, p.CreatedAt });
+
+
                     
                 entity.Property(p => p.CreatedAt)
                     .IsRequired();
+                entity.HasIndex(p => p.CreatedAt);
+
                     
                 entity.Property(p => p.CreatedBy)
                     .IsRequired()
@@ -103,15 +113,10 @@ namespace LifeCare.Infrastructure.Persistence
                 entity.Property(p => p.GuardianPhone)
                     .IsRequired(false)
                     .HasMaxLength(20);
+                
                     
-                // Indexes
-                entity.Property(p => p.Status)
-                    .HasConversion<string>()
-                    .HasDefaultValue(PatientStatus.AwaitingTriage);
-                    //.HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None); // for SQL Server
-
-                entity.HasIndex(p => new { p.LastName, p.FirstName });
-                entity.HasIndex(p => p.CreatedAt);
+                
+               
             });
             modelBuilder.Entity<PatientStatusHistory>(entity =>
             {

@@ -17,9 +17,9 @@ namespace LifeCare.Application.Patients.Dtos
         public string Gender { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
-        public string Street { get; set; }
-        public string City { get; set; }
-        public string State { get; set; }
+        public string County { get; set; }
+        public string SubCounty { get; set; }
+        public string Country { get; set; }
         public string ZipCode { get; set; }
         public string Status { get; set; }
         public bool RequiresGuardian { get; set; }
@@ -45,9 +45,9 @@ namespace LifeCare.Application.Patients.Dtos
                 Gender = patient.Gender,
                 PhoneNumber = patient.PhoneNumber,
                 Email = patient.Email,
-                Street = patient.Street,
-                City = patient.City,
-                State = patient.State,
+                County = patient.County,
+                SubCounty = patient.SubCounty,
+                Country = patient.Country,
                 ZipCode = patient.ZipCode,
                 Status = patient.Status.ToString(),
                 RequiresGuardian = patient.RequiresGuardian,

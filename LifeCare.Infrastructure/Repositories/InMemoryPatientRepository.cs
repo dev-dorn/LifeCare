@@ -103,7 +103,7 @@ namespace LifeCare.Infrastructure.Repositories
             if (!string.IsNullOrWhiteSpace(city))
             {
                 query = query.Where(p =>
-                    p.City.Contains(city, StringComparison.OrdinalIgnoreCase));
+                    p.SubCounty.Contains(city, StringComparison.OrdinalIgnoreCase));
             }
 
             var result = query

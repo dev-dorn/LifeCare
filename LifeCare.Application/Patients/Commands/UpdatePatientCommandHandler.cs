@@ -32,9 +32,9 @@ namespace LifeCare.Application.Patients.Commands
 
             patient.UpdateContactInfo(
                 request.Email,
-                request.Street,
-                request.City,
-                request.State,
+                request.County,
+                request.SubCounty,
+                request.Country,
                 request.ZipCode
             );
             

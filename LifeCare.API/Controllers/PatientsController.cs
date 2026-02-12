@@ -48,9 +48,9 @@ namespace LifeCare.API.Controllers
                 Gender = request.Gender,
                 PhoneNumber = request.PhoneNumber,
                 Email = request.Email,
-                Street = request.Street,
-                City = request.City,
-                State = request.State,
+                County = request.County,
+                SubCounty = request.SubCounty,
+                Country = request.Country,
                 ZipCode = request.ZipCode,
                 ReceptionistId = User?.Identity?.Name ?? "System",
 
@@ -206,9 +206,9 @@ namespace LifeCare.API.Controllers
                 Gender = request.Gender,
                 PhoneNumber = request.PhoneNumber,
                 Email = request.Email,
-                Street = request.Street,
-                City = request.City,
-                State = request.State,
+                County = request.County,
+                SubCounty = request.SubCounty,
+                Country = request.Country,
                 ZipCode = request.ZipCode,
                 GuardianName = request.GuardianName,
                 GuardianRelationship = request.GuardianRelationship,
@@ -274,9 +274,9 @@ namespace LifeCare.API.Controllers
         public string PhoneNumber { get; set; }
 
         public string Email { get; set; }
-        public string Street { get; set; }
-        public string City { get; set; }
-        public string State { get; set; }
+        public string County { get; set; }
+        public string SubCounty { get; set; }
+        public string Country { get; set; }
         public string ZipCode { get; set; }
 
         public GuardianRequest Guardian { get; set; }
