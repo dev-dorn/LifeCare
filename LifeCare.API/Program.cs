@@ -3,7 +3,6 @@ using LifeCare.Infrastructure.Persistence;
 using LifeCare.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using LifeCare.Application.Interfaces.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,8 +29,6 @@ builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 
 // Add MediatR
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.Load("LifeCare.Application")));
-builder.Services.AddScoped<IApplicationDbContext>(
-    provider => provider.GetRequiredService<HospitalDbContext>());
 
 // Add CORS
 builder.Services.AddCors(options =>
@@ -149,9 +146,9 @@ static async Task SeedDataAsync(HospitalDbContext context)
                 gender: "Female",
                 phoneNumber: "+1-555-5678",
                 email: "",
-                county: "",
-                subCounty: "",
-                country: "",
+                county:"",
+                subCounty:"",
+                country:"",
                 zipCode: "",
                 createdAt: DateTime.UtcNow.AddHours(-12),
                 createdBy: "System"
@@ -168,9 +165,9 @@ static async Task SeedDataAsync(HospitalDbContext context)
                 gender: "Female",
                 phoneNumber: "+1-555-9012",
                 email: "emma.parent@example.com",
-                county: "789 Pine St",
-                subCounty: "Sometown",
-                country: "TX",
+                county:"789 Pine St",
+                subCounty:"Sometown",
+                country:"TX",
                 zipCode: "67890",
                 createdAt: DateTime.UtcNow.AddHours(-6),
                 createdBy: "System",

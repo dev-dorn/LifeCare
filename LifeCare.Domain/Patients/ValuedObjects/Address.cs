@@ -4,12 +4,12 @@ namespace LifeCare.Domain.Patients
     {
         public string County { get; }
         public string SubCounty { get; }
-        public string ZipCode { get; }
         public string Country { get; }
+        public string ZipCode { get; }
         
-        public Address(string county, string subCounty,  string zipCode, string country = "Kenya")
+        public Address(string county, string subCounty, string zipCode, string country = "Kenya")
         {
-            County = county?.Trim();
+            County =county?.Trim();
             SubCounty = subCounty?.Trim();
             ZipCode = zipCode?.Trim();
             Country = country?.Trim();
@@ -22,6 +22,6 @@ namespace LifeCare.Domain.Patients
             string.IsNullOrWhiteSpace(ZipCode);
             
         public override string ToString() => 
-            $"{County}, {SubCounty},  {ZipCode}, {Country}";
+            $"{County}, {SubCounty}, {Country} {ZipCode}, {Country}";
     }
 }

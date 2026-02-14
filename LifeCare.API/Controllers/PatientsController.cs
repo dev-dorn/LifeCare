@@ -1,13 +1,11 @@
 // LifeCare.API/Controllers/PatientsController.cs
 
 using System.ComponentModel.DataAnnotations;
-using LifeCare.API.Controllers.Requests;
 using LifeCare.Application.Patients.Commands;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using LifeCare.Application.Patients.Queries;
 using LifeCare.Application.Patients.Dtos;
-using LifeCare.Domain.Patients;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -163,91 +161,7 @@ namespace LifeCare.API.Controllers
     
             return Ok(new { success = true, data = patient });
         }
-        //
-        // GET PATIENT BY PHONE NUMBER
-        //
-        [HttpGet("phone/{phoneNumber}")]
-        public async Task<IActionResult> GetPatientByPhoneNumber(string phoneNumber)
-        {
-            var query = new GetPatientByPhoneQuery(phoneNumber);
-            var patient = await _mediator.Send(query);
-
-            if (patient == null)
-            {
-                return NotFound(new { message = $"Patient with PhoneNumber {phoneNumber} not found" });
-            }
-            return Ok(new{success = true, data = patient });
-
-        }
-        //
-        // SEARCH PATIENTS
-        //
-        [HttpGet("search")]
-        public async Task<IActionResult> SearchPatients([FromQuery] string? name, [FromQuery] string? city)
-        {
-            var query = new SearchPatientQuery(name, city);
-            var patients = await _mediator.Send(query);
-    
-            return Ok(new { success = true, data = patients });
-        }
-        //
-        //PUT /api/patients/{id}
-        //
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePatient(Guid id, [FromBody] UpdatePatientRequest request)
-        {
-            var command = new UpdatePatientCommand
-            {
-                Id = id,
-                NationalId = request.NationalId,
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                DateOfBirth = request.DateOfBirth,
-                Gender = request.Gender,
-                PhoneNumber = request.PhoneNumber,
-                Email = request.Email,
-                County = request.County,
-                SubCounty = request.SubCounty,
-                Country = request.Country,
-                ZipCode = request.ZipCode,
-                GuardianName = request.GuardianName,
-                GuardianRelationship = request.GuardianRelationship,
-                GuardianPhone = request.GuardianPhone
-            };
-    
-            var result = await _mediator.Send(command);
-    
-            if (!result.IsSuccess)
-                return NotFound(new { success = false, error = result.Error });
         
-            return Ok(new { success = true, data = result.Data });
-        }
-        [HttpPatch("{id}/status")]
-        public async Task<IActionResult> UpdatePatientStatus(Guid id, [FromBody] UpdateStatusRequest request)
-        {
-            // Convert string → enum
-            if (!Enum.TryParse<PatientStatus>(request.NewStatus, true, out var status))
-                return BadRequest(new { success = false, error = "Invalid patient status" });
-
-            // Create command with enum
-            var command = new UpdatePatientStatusCommand(
-                id,
-                status,
-                request.Notes,
-                request.ChangedBy,
-                request.ChangedAt
-            );
-
-            var result = await _mediator.Send(command);
-
-            if (!result.IsSuccess)
-                return NotFound(new { success = false, error = result.Error });
-
-            return Ok(new { success = true, data = result.Data });
-        }
-
-
-       
     }
 
     // =============================

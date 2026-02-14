@@ -11,4 +11,4 @@ public record UpdatePatientStatusCommand(
     string? Notes,
     string ChangedBy ,
     DateTime ChangedAt 
-    ) : IRequest<Result<PatientDto>>;
+) : IRequest<Result<PatientDto>>;

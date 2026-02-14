@@ -55,10 +55,10 @@ namespace LifeCare.Application.Patients.Commands
             request.Gender,
             request.PhoneNumber,
             mrn,
-            request.ReceptionistId, 
-            request.County,
-            request.SubCounty,
-            request.Country,
+            request.ReceptionistId,
+            request.County,        // county (or street in your DTO)
+            request.SubCounty,          // subCounty
+            request.Country,         // country
             request.ZipCode,
             request.Email,
             request.Guardian != null
@@ -66,7 +66,7 @@ namespace LifeCare.Application.Patients.Commands
                 : null,
             request.Guardian?.Relationship,
             request.Guardian?.PhoneNumber
-            );
+        );
 
         // Optional contact info
         patient.UpdateContactInfo(

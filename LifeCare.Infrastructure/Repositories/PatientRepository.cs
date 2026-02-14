@@ -80,6 +80,12 @@ namespace LifeCare.Infrastructure.Repositories
         {
             return _context.SaveChangesAsync(cancellationToken);
         }
+        public async Task<Patient?> GetByPhoneNumberAsync(string phoneNumber)
+        {
+            return await _context.Patients
+                .FirstOrDefaultAsync(p => p.PhoneNumber == phoneNumber);
+        }
+        
         
         public async Task<List<Patient>> GetAllAsync()
         {
@@ -93,13 +99,6 @@ namespace LifeCare.Infrastructure.Repositories
             return await _context.Patients
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
-
-        public async Task<Patient?> GetByPhoneNumberAsync(string phoneNumber)
-        {
-            return await _context.Patients
-                .FirstOrDefaultAsync(p => p.PhoneNumber == phoneNumber);
-        }
-
         public async Task<IReadOnlyList<Patient>> SearchPatientsAsync(string? name, string? city)
         {
             IQueryable<Patient> query = _context.Patients;
@@ -123,6 +122,15 @@ namespace LifeCare.Infrastructure.Repositories
         {
             await _context.PatientStatusHistory.AddAsync(history);
         }
+        
 
+        public async Task<List<Patient>> GetRecentPatientsAsync( int count)
+        {
+            return await _context.Patients
+                .OrderByDescending(p => p.CreatedAt)
+                .Take(count)
+                .ToListAsync();
+        }
+        
     }
 }

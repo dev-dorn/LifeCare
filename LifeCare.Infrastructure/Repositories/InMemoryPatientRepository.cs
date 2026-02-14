@@ -33,6 +33,8 @@ namespace LifeCare.Infrastructure.Repositories
         {
             return Task.FromResult(_patients.ToList());
         }
+      
+
 
         public Task<Patient?> GetByPhoneNumberAsync(string phoneNumber)
         {
@@ -83,6 +85,19 @@ namespace LifeCare.Infrastructure.Repositories
 
             return Task.CompletedTask;
         }
+
+        public Task<List<Patient>> GetRecentPatientsAsync(int count)
+        {
+            var recentPatients = _patients
+                .OrderByDescending(p => p.CreatedAt)
+                .Take(count)
+                .ToList();
+            return Task.FromResult(recentPatients);
+        }
+        
+        
+        
+      
 
         public Task SaveChangesAsync(CancellationToken cancellationToken)
         {
