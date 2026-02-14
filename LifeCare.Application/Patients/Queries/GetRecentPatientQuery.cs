@@ -1,4 +1,3 @@
-using LifeCare.Application.Patients.Dtos;
 using LifeCare.Domain.Patients;
 using MediatR;
 

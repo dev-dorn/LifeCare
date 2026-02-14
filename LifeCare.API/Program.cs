@@ -33,9 +33,9 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.Loa
 // Add CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", builder =>
+    options.AddPolicy("AllowAll", policy =>
     {
-        builder.AllowAnyOrigin()
+        policy.AllowAnyOrigin()
                .AllowAnyMethod()
                .AllowAnyHeader();
     });
