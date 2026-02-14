@@ -6,6 +6,7 @@ namespace LifeCare.Infrastructure.Repositories
     public class InMemoryPatientRepository : IPatientRepository
     {
         private readonly List<Patient> _patients = new();
+        private readonly List<PatientStatusHistory> _patientStatusHistory = new();
 
         public Task<Patient?> GetByMrnAsync(string mrn)
         {
@@ -32,6 +33,8 @@ namespace LifeCare.Infrastructure.Repositories
         {
             return Task.FromResult(_patients.ToList());
         }
+      
+
 
         public Task<Patient?> GetByPhoneNumberAsync(string phoneNumber)
         {
@@ -83,6 +86,19 @@ namespace LifeCare.Infrastructure.Repositories
             return Task.CompletedTask;
         }
 
+        public Task<List<Patient>> GetRecentPatientsAsync(int count)
+        {
+            var recentPatients = _patients
+                .OrderByDescending(p => p.CreatedAt)
+                .Take(count)
+                .ToList();
+            return Task.FromResult(recentPatients);
+        }
+        
+        
+        
+      
+
         public Task SaveChangesAsync(CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
@@ -102,7 +118,7 @@ namespace LifeCare.Infrastructure.Repositories
             if (!string.IsNullOrWhiteSpace(city))
             {
                 query = query.Where(p =>
-                    p.City.Contains(city, StringComparison.OrdinalIgnoreCase));
+                    p.SubCounty.Contains(city, StringComparison.OrdinalIgnoreCase));
             }
 
             var result = query
@@ -129,6 +145,14 @@ namespace LifeCare.Infrastructure.Repositories
 
             return (year, sequence);
         }
+
+        public Task AddStatusHistoryAsync(PatientStatusHistory history)
+        {
+            _patientStatusHistory.Add(history);
+            return Task.CompletedTask;
+        }
+        
+        
     }
 
 }

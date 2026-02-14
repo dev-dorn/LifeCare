@@ -2,28 +2,26 @@ namespace LifeCare.Domain.Patients
 {
     public class Address
     {
-        public string Street { get; }
-        public string City { get; }
-        public string State { get; }
-        public string ZipCode { get; }
+        public string County { get; }
+        public string SubCounty { get; }
         public string Country { get; }
+        public string ZipCode { get; }
         
-        public Address(string street, string city, string state, string zipCode, string country = "USA")
+        public Address(string county, string subCounty, string zipCode, string country = "Kenya")
         {
-            Street = street?.Trim();
-            City = city?.Trim();
-            State = state?.Trim();
+            County =county?.Trim();
+            SubCounty = subCounty?.Trim();
             ZipCode = zipCode?.Trim();
             Country = country?.Trim();
         }
         
         public bool IsEmpty => 
-            string.IsNullOrWhiteSpace(Street) &&
-            string.IsNullOrWhiteSpace(City) &&
-            string.IsNullOrWhiteSpace(State) &&
+            string.IsNullOrWhiteSpace(County) &&
+            string.IsNullOrWhiteSpace(SubCounty) &&
+            string.IsNullOrWhiteSpace(Country) &&
             string.IsNullOrWhiteSpace(ZipCode);
             
         public override string ToString() => 
-            $"{Street}, {City}, {State} {ZipCode}, {Country}";
+            $"{County}, {SubCounty}, {Country} {ZipCode}, {Country}";
     }
 }

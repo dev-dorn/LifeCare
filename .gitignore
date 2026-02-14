@@ -39,4 +39,6 @@ bin/
 *.db
 *.db-shm
 *.db-wal
-*.log
+*.logLifeCare.Infrastructure/Migrations/
+
+LifeCare.Infrastructure/Migrations/

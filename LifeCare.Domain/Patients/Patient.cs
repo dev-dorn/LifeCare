@@ -14,9 +14,9 @@ namespace LifeCare.Domain.Patients
         public string Gender { get; private set; }
         public string PhoneNumber { get; private set; }
         public string Email { get; private set; }
-        public string Street { get; private set; }
-        public string City { get; private set; }
-        public string State { get; private set; }
+        public string County { get; private set; }
+        public string SubCounty { get; private set; }
+        public string Country { get; private set; }
         public string ZipCode { get; private set; }
         public PatientStatus? Status { get; private set; }
         public DateTime CreatedAt { get; private set; }
@@ -42,8 +42,9 @@ namespace LifeCare.Domain.Patients
             string phoneNumber,
             string mrn,
             string createdBy,
-            string city,
-            string state,
+            string county,
+            string subCounty,
+            string country,
             string zipCode,
             string email,
             string? guardianName,
@@ -89,9 +90,9 @@ namespace LifeCare.Domain.Patients
             string gender,
             string phoneNumber,
             string email,
-            string street,
-            string city,
-            string state,
+            string county,
+            string subCounty,
+            string country,
             string zipCode,
             DateTime createdAt,
             string createdBy,
@@ -122,9 +123,9 @@ namespace LifeCare.Domain.Patients
                 Gender = gender,
                 PhoneNumber = phoneNumber.Trim(),
                 Email = email?.Trim() ?? string.Empty,
-                Street = street?.Trim() ?? string.Empty,
-                City = city?.Trim() ?? string.Empty,
-                State = state?.Trim() ?? string.Empty,
+                County = county?.Trim() ?? string.Empty,
+                SubCounty = subCounty?.Trim() ?? string.Empty,
+                Country = country?.Trim() ?? string.Empty,
                 ZipCode = zipCode?.Trim() ?? string.Empty,
                 Status = PatientStatus.AwaitingTriage,
                 CreatedAt = createdAt,
@@ -178,7 +179,7 @@ namespace LifeCare.Domain.Patients
             return age;
         }
         
-        public void UpdateContactInfo(string email, string street, string city, string state, string zipCode)
+        public void UpdateContactInfo(string email, string county, string subCounty, string country, string zipCode)
         {
             if (!string.IsNullOrWhiteSpace(email))
             {
@@ -188,9 +189,9 @@ namespace LifeCare.Domain.Patients
                 Email = email.Trim();
             }
             
-            Street = street?.Trim();
-            City = city?.Trim();
-            State = state?.Trim();
+            County = county?.Trim();
+            SubCounty = subCounty?.Trim();
+            Country = country?.Trim();
             ZipCode = zipCode?.Trim();
         }
 
@@ -202,6 +203,11 @@ namespace LifeCare.Domain.Patients
             DateOfBirth = dob;
             Gender = gender;
 
+        }
+
+        public void UpdateStatus(PatientStatus newStatus)
+        {
+            Status = newStatus;
         }
 
         public void UpdateGuardianInfo(string? name, string? relationship, string? phone)
