@@ -1,8 +1,11 @@
-using LifeCare.Application.Interfaces.Repositories;
-using LifeCare.Infrastructure.Persistence;
-using LifeCare.Infrastructure.Repositories;
+
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using LifeCare.Modules.Patients.Application.Commands;
+using LifeCare.Modules.Patients.Infrastructure.Persistence;
+using LifeCare.Modules.Patients.Infrastructure.Repositories;
+using LifeCare.Modules.Shared.Application.common;
+using LifeCare.Modules.Shared.Application.Interfaces.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,7 +31,12 @@ builder.Services.AddDbContext<HospitalDbContext>(options =>
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 
 // Add MediatR
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.Load("LifeCare.Application")));
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(typeof(RegisterPatientCommand).Assembly);
+    cfg.RegisterServicesFromAssembly(typeof(Result).Assembly);
+});
+
 
 // Add CORS
 builder.Services.AddCors(options =>
@@ -117,7 +125,7 @@ static async Task SeedDataAsync(HospitalDbContext context)
         try
         {
             // Create patient 1
-            var patient1 = LifeCare.Domain.Patients.Patient.CreateForSeed(
+            var patient1 = LifeCare.Modules.Patients.Domain.Patient.CreateForSeed(
                 id: Guid.NewGuid(),
                 mrn: "LC-2024-0001",
                 shifNumber: "xxxxxxxxxx",
@@ -137,7 +145,7 @@ static async Task SeedDataAsync(HospitalDbContext context)
             );
             
             // Create patient 2
-            var patient2 = LifeCare.Domain.Patients.Patient.CreateForSeed(
+            var patient2 = LifeCare.Modules.Patients.Domain.Patient.CreateForSeed(
                 id: Guid.NewGuid(),
                 mrn: "LC-2024-0002",
                 shifNumber: "xxxxxxxxxx",
@@ -157,7 +165,7 @@ static async Task SeedDataAsync(HospitalDbContext context)
             );
             
             // Create patient 3
-            var patient3 = LifeCare.Domain.Patients.Patient.CreateForSeed(
+            var patient3 = LifeCare.Modules.Patients.Domain.Patient.CreateForSeed(
                 id: Guid.NewGuid(),
                 mrn: "LC-2024-0003",
                 shifNumber: "xxxxxxxxxx",

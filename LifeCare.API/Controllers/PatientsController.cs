@@ -2,12 +2,13 @@
 
 using System.ComponentModel.DataAnnotations;
 using LifeCare.API.Controllers.Requests;
-using LifeCare.Application.Patients.Commands;
-using Microsoft.AspNetCore.Mvc;
+using LifeCare.Modules.Patients.Application.Commands;
+using LifeCare.Modules.Patients.Application.Dtos;
+using LifeCare.Modules.Patients.Application.Queries;
+using LifeCare.Modules.Patients.Domain;
+using LifeCare.Modules.Patients.Domain.Enums;
 using MediatR;
-using LifeCare.Application.Patients.Queries;
-using LifeCare.Application.Patients.Dtos;
-using LifeCare.Domain.Patients;
+using Microsoft.AspNetCore.Mvc;
 
 
 namespace LifeCare.API.Controllers
@@ -56,7 +57,7 @@ namespace LifeCare.API.Controllers
 
                 Guardian = request.Guardian == null
                     ? null
-                    : new LifeCare.Application.Patients.Commands.GuardianRequest
+                    : new LifeCare.Modules.Patients.Application.Commands.GuardianRequest
                     {
                         FirstName = request.Guardian.FirstName,
                         LastName = request.Guardian.LastName,
