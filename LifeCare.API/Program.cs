@@ -120,6 +120,7 @@ static async Task SeedDataAsync(HospitalDbContext context)
             var patient1 = LifeCare.Domain.Patients.Patient.CreateForSeed(
                 id: Guid.NewGuid(),
                 mrn: "LC-2024-0001",
+                shifNumber: "xxxxxxxxxx",
                 nationalId: "123-45-6789",
                 firstName: "John",
                 lastName: "Doe",
@@ -139,6 +140,7 @@ static async Task SeedDataAsync(HospitalDbContext context)
             var patient2 = LifeCare.Domain.Patients.Patient.CreateForSeed(
                 id: Guid.NewGuid(),
                 mrn: "LC-2024-0002",
+                shifNumber: "xxxxxxxxxx",
                 nationalId: "987-65-4321",
                 firstName: "Jane",
                 lastName: "Smith",
@@ -158,6 +160,7 @@ static async Task SeedDataAsync(HospitalDbContext context)
             var patient3 = LifeCare.Domain.Patients.Patient.CreateForSeed(
                 id: Guid.NewGuid(),
                 mrn: "LC-2024-0003",
+                shifNumber: "xxxxxxxxxx",
                 nationalId: "456-78-9012",
                 firstName: "Emma",
                 lastName: "Johnson",

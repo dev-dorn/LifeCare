@@ -1,4 +1,4 @@
-namespace LifeCare.Domain.Patients
+namespace LifeCare.Domain.Patients.ValuedObjects
 {
     public class Address(string county, string subCounty, string zipCode, string country = "Kenya")
     {

@@ -8,9 +8,8 @@ namespace LifeCare.Infrastructure.Persistence
     {
         public DbSet<Patient> Patients { get; set; }
         public DbSet<PatientStatusHistory> PatientStatusHistory { get; set; }
-        public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-            => base.SaveChangesAsync(cancellationToken);
 
+       
         
         public HospitalDbContext(DbContextOptions<HospitalDbContext> options) : base(options)
         {
@@ -30,6 +29,13 @@ namespace LifeCare.Infrastructure.Persistence
             {
                 entity.HasKey(p => p.Id);
                 entity.Ignore(p => p.DomainEvents);
+
+                entity.Property(p => p.ShifNumber)
+                    .IsRequired()
+                    .HasMaxLength(50);
+                
+                entity.HasIndex(p => p.ShifNumber)
+                    .IsUnique();
                 
                 entity.Property(p => p.MRN)
                     .IsRequired()
@@ -39,11 +45,11 @@ namespace LifeCare.Infrastructure.Persistence
                     .IsUnique();
                     
                 entity.Property(p => p.NationalId)
-                    .IsRequired()
                     .HasMaxLength(50);
                     
                 entity.HasIndex(p => p.NationalId)
-                    .IsUnique();
+                    .IsUnique()
+                    .HasFilter("\"NationalId\" IS NOT NULL");
                     
                 entity.Property(p => p.FirstName)
                     .IsRequired()

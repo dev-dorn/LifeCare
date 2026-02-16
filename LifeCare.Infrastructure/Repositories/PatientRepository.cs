@@ -16,13 +16,13 @@ namespace LifeCare.Infrastructure.Repositories
         
       
         
-        public async Task<Patient> GetByMrnAsync(string mrn)
+        public async Task<Patient?> GetByMrnAsync(string mrn)
         {
             return await _context.Patients
                 .FirstOrDefaultAsync(p => p.MRN == mrn);
         }
         
-        public async Task<Patient> GetByNationalIdAsync(string nationalId)
+        public async Task<Patient?> GetByNationalIdAsync(string nationalId)
         {
             return await _context.Patients
                 .FirstOrDefaultAsync(p => p.NationalId == nationalId);
@@ -63,6 +63,14 @@ namespace LifeCare.Infrastructure.Repositories
                 .CountAsync(p => p.MRN != null && p.MRN.StartsWith($"LC-{currentYear}-"));
                 
             return count + 1;
+        }
+
+        public async Task<List<PatientStatusHistory>> GetStatusHistoryAsync(Guid patientId)
+        {
+            return await _context.PatientStatusHistory
+                .Where(h => h.PatientId == patientId)
+                .OrderByDescending(h => h.ChangedAt)
+                .ToListAsync();
         }
         
         public async Task AddAsync(Patient patient)
@@ -130,6 +138,12 @@ namespace LifeCare.Infrastructure.Repositories
                 .OrderByDescending(p => p.CreatedAt)
                 .Take(count)
                 .ToListAsync();
+        }
+
+        public async Task<Patient?> GetByShifNumberAsync(string shifNumber)
+        {
+            return await _context.Patients
+                .FirstOrDefaultAsync(p => p.ShifNumber == shifNumber);
         }
         
     }

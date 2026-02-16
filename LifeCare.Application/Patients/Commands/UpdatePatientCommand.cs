@@ -23,5 +23,6 @@ public class UpdatePatientCommand : IRequest<Result<PatientDto>>
     public string? GuardianRelationship{get; set;}
     public string? GuardianPhone{get; set;}
     public required string NationalId{get; set;}
+    public required string ShifNumber { get; set; }
     
 }

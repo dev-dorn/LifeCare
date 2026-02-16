@@ -94,14 +94,26 @@ namespace LifeCare.Infrastructure.Repositories
                 .ToList();
             return Task.FromResult(recentPatients);
         }
-        
-        
-        
-      
+
+        public Task<Patient?> GetByShifNumberAsync(string shifNumber)
+        {
+            return Task.FromResult(
+                _patients.FirstOrDefault(p => p.ShifNumber == shifNumber));
+        }
+
 
         public Task SaveChangesAsync(CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
+        }
+        public Task<List<PatientStatusHistory>> GetStatusHistoryAsync(Guid patientId)
+        {
+            var history = _patientStatusHistory
+                .Where(h => h.PatientId == patientId)
+                .OrderByDescending(h => h.ChangedAt)
+                .ToList();
+    
+            return Task.FromResult(history);
         }
 
         public Task<IReadOnlyList<Patient>> SearchPatientsAsync(string? name, string? city)

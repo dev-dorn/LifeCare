@@ -8,8 +8,7 @@ using MediatR;
 using LifeCare.Application.Patients.Queries;
 using LifeCare.Application.Patients.Dtos;
 using LifeCare.Domain.Patients;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
+
 
 namespace LifeCare.API.Controllers
 {
@@ -41,6 +40,7 @@ namespace LifeCare.API.Controllers
 
             var command = new RegisterPatientCommand
             {
+                ShifNumber = request.ShifNumber,
                 NationalId = request.NationalId,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
@@ -209,6 +209,7 @@ namespace LifeCare.API.Controllers
             var command = new UpdatePatientCommand
             {
                 Id = id,
+                ShifNumber = request.ShifNumber,
                 NationalId = request.NationalId,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
@@ -255,8 +256,40 @@ namespace LifeCare.API.Controllers
 
             return Ok(new { success = true, data = result.Data });
         }
-       
 
+        [HttpGet("shif/{shifNumber}")]
+        public async Task<IActionResult> GetPatientByShif(string shifNumber)
+        {
+            var patient = await _mediator.Send(new GetPatientByShifQuery(shifNumber));
+
+            if (patient == null)
+                return NotFound(new { success = false, error = "Patient not found" });
+            return Ok(new {success = true, data = PatientDto.FromPatient(patient) });
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeactivatePatient(Guid id)
+        {
+            var result = await _mediator.Send(new DeactivatePatientCommand(id));
+            
+            if (!result.IsSuccess)
+                return NotFound(new {success = false, error = result.Error});
+            return Ok(new { success = true, message = "Patient deactivated", datas = result.Data });
+        }
+
+        [HttpGet("{id}/status-history")]
+        public async Task<IActionResult> GetPatientStatusHistory(Guid id)
+        {
+            var history = await _mediator.Send(new GetPatientStatusHistoryQuery(id));
+            return Ok(new { success = true, data = history });
+        }
+
+        [HttpGet("statistics")]
+        public async Task<IActionResult> GetStatistics()
+        {
+            var stats = await _mediator.Send(new GetPatientStatisticsQuery());
+            return Ok(new {success = true, data = stats });
+        }
 
 
        
@@ -267,42 +300,9 @@ namespace LifeCare.API.Controllers
     // =============================
     // REQUEST DTOs (API LAYER)
     // =============================
-    public class RegisterPatientRequest
-    {
-        [Required]
-        public string NationalId { get; set; }
+    
 
-        [Required]
-        public string FirstName { get; set; }
-
-        [Required]
-        public string LastName { get; set; }
-
-        [Required]
-        public DateTime DateOfBirth { get; set; }
-
-        [Required]
-        public string Gender { get; set; }
-
-        [Required]
-        public string PhoneNumber { get; set; }
-
-        public string Email { get; set; }
-        public string County { get; set; }
-        public string SubCounty { get; set; }
-        public string Country { get; set; }
-        public string ZipCode { get; set; }
-
-        public GuardianRequest Guardian { get; set; }
-    }
-
-    public class GuardianRequest
-    {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Relationship { get; set; }
-        public string PhoneNumber { get; set; }
-    }
+    
 
     // =============================
     // API RESPONSE WRAPPER

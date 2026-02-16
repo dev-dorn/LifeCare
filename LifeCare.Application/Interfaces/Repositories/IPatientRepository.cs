@@ -18,5 +18,7 @@ namespace LifeCare.Application.Interfaces.Repositories
         Task<IReadOnlyList<Patient>> SearchPatientsAsync(string? name, string? city);
         Task AddStatusHistoryAsync(PatientStatusHistory history);
         Task<List<Patient>> GetRecentPatientsAsync(int count);
+        Task<Patient?> GetByShifNumberAsync(string shifNumber);
+        Task<List<PatientStatusHistory>> GetStatusHistoryAsync(Guid patientId);
     }
 }

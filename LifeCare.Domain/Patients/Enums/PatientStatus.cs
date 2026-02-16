@@ -8,6 +8,7 @@ namespace LifeCare.Domain.Patients
         InConsultation = 3,
         InLab = 4,
         AwaitingDischarge = 5,
-        Discharged = 6
+        Discharged = 6,
+        Inactive = 7
     }
 }

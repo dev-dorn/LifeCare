@@ -8,26 +8,27 @@ namespace LifeCare.Application.Patients.Dtos
     {
         public Guid Id { get; set; }
         public required string Mrn { get; set; }
-        public string NationalId { get; set; }
+        public required string ShifNumber { get; set; }
+        public string? NationalId { get; set; }
         public required string FirstName { get; set; }
         public required string LastName { get; set; }
         public string FullName => $"{FirstName} {LastName}";
         public DateTime DateOfBirth { get; set; }
         public int Age { get; set; }
-        public string Gender { get; set; }
-        public string PhoneNumber { get; set; }
-        public string Email { get; set; }
-        public string County { get; set; }
-        public string SubCounty { get; set; }
-        public string Country { get; set; }
-        public string ZipCode { get; set; }
-        public string Status { get; set; }
+        public required string Gender { get; set; }
+        public required string PhoneNumber { get; set; }
+        public required string Email { get; set; }
+        public string? County { get; set; }
+        public string? SubCounty { get; set; }
+        public string? Country { get; set; }
+        public string? ZipCode { get; set; }
+        public required string Status { get; set; }
         public bool RequiresGuardian { get; set; }
-        public string GuardianName { get; set; }
-        public string GuardianRelationship { get; set; }
-        public string GuardianPhone { get; set; }
+        public string? GuardianName { get; set; }
+        public string? GuardianRelationship { get; set; }
+        public string? GuardianPhone { get; set; }
         public DateTime CreatedAt { get; set; }
-        public string CreatedBy { get; set; }
+        public required string CreatedBy { get; set; }
         
         public static PatientDto FromPatient(Patient patient)
         {
@@ -37,6 +38,7 @@ namespace LifeCare.Application.Patients.Dtos
             {
                 Id = patient.Id,
                 Mrn = patient.MRN,
+                ShifNumber = patient.ShifNumber,
                 NationalId = patient.NationalId,
                 FirstName = patient.FirstName,
                 LastName = patient.LastName,

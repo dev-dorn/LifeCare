@@ -17,6 +17,7 @@ namespace LifeCare.Application.Patients.Commands
                 return Result<PatientDto>.Failure("Patient not found");
 
             patient.UpdateBasicInfo(
+                request.ShifNumber,
                 request.NationalId,
                 request.FirstName,
                 request.LastName,
