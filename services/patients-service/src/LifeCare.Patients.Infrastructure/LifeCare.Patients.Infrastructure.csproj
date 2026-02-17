@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\Domain\LifeCare.Modules.Patients.Domain.csproj" />
-    <ProjectReference Include="..\Application\LifeCare.Modules.Patients.Application.csproj" />
+    <ProjectReference Include="..\LifeCare.Patients.Domain\LifeCare.Patients.Domain.csproj" />
+    <ProjectReference Include="..\LifeCare.Patients.Application\LifeCare.Patients.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>

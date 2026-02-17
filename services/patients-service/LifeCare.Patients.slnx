@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/LifeCare.Patients.API/LifeCare.Patients.API.csproj" />
+    <Project Path="src/LifeCare.Patients.Application/LifeCare.Patients.Application.csproj" />
+    <Project Path="src/LifeCare.Patients.Domain/LifeCare.Patients.Domain.csproj" />
+    <Project Path="src/LifeCare.Patients.Infrastructure/LifeCare.Patients.Infrastructure.csproj" />
+  </Folder>
+</Solution>
