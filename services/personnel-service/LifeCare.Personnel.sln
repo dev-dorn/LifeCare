@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{484FC685-1A5A-4297-A8F4-5CF4E9FFF881}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LifeCare.Personnel.API", "src\LifeCare.Personnel.API\LifeCare.Personnel.API.csproj", "{821670B3-B74F-48FF-88A8-70D9FE621AFB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LifeCare.Personnel.Domain", "src\LifeCare.Personnel.Domain\LifeCare.Personnel.Domain.csproj", "{8964AB0D-2408-4C62-9AF6-08C6F889BFD9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LifeCare.Personnel.Application", "src\LifeCare.Personnel.Application\LifeCare.Personnel.Application.csproj", "{F24A45AA-FACC-4801-8884-8688D2B0E107}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LifeCare.Personnel.Infrastructure", "src\LifeCare.Personnel.Infrastructure\LifeCare.Personnel.Infrastructure.csproj", "{2AFB258C-60B3-437E-A2A4-3DB6DBFD810B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{821670B3-B74F-48FF-88A8-70D9FE621AFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{821670B3-B74F-48FF-88A8-70D9FE621AFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{821670B3-B74F-48FF-88A8-70D9FE621AFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{821670B3-B74F-48FF-88A8-70D9FE621AFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8964AB0D-2408-4C62-9AF6-08C6F889BFD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8964AB0D-2408-4C62-9AF6-08C6F889BFD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8964AB0D-2408-4C62-9AF6-08C6F889BFD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8964AB0D-2408-4C62-9AF6-08C6F889BFD9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F24A45AA-FACC-4801-8884-8688D2B0E107}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F24A45AA-FACC-4801-8884-8688D2B0E107}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F24A45AA-FACC-4801-8884-8688D2B0E107}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F24A45AA-FACC-4801-8884-8688D2B0E107}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AFB258C-60B3-437E-A2A4-3DB6DBFD810B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AFB258C-60B3-437E-A2A4-3DB6DBFD810B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AFB258C-60B3-437E-A2A4-3DB6DBFD810B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AFB258C-60B3-437E-A2A4-3DB6DBFD810B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{821670B3-B74F-48FF-88A8-70D9FE621AFB} = {484FC685-1A5A-4297-A8F4-5CF4E9FFF881}
+		{8964AB0D-2408-4C62-9AF6-08C6F889BFD9} = {484FC685-1A5A-4297-A8F4-5CF4E9FFF881}
+		{F24A45AA-FACC-4801-8884-8688D2B0E107} = {484FC685-1A5A-4297-A8F4-5CF4E9FFF881}
+		{2AFB258C-60B3-437E-A2A4-3DB6DBFD810B} = {484FC685-1A5A-4297-A8F4-5CF4E9FFF881}
+	EndGlobalSection
+EndGlobal

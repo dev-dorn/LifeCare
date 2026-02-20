@@ -1,0 +1,6 @@
+@LifeCare.Personnel.API_HostAddress = http://localhost:5167
+
+GET {{LifeCare.Personnel.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
