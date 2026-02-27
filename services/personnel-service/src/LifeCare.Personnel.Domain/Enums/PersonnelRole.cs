@@ -1,4 +1,4 @@
-namespace LifeCare.Personnel.Domain.Enum;
+namespace LifeCare.Personnel.Domain.Enums;
 
 public enum PersonnelRole
 {
@@ -8,5 +8,4 @@ public enum PersonnelRole
     LabTechnician = 4,
     Pharmacist = 5,
     Admin = 6
-            
 }

@@ -1,12 +1,12 @@
-using LifeCare.Modules.Shared.Application.Interfaces.Repositories;
 using LifeCare.Modules.Patients.Domain;
+using LifeCare.Modules.Shared.Application.Interfaces.Repositories;
 using MediatR;
 
 namespace LifeCare.Modules.Patients.Application.Queries;
 
 public class GetRecentPatientsQueryHandler : IRequestHandler<GetRecentPatientsQuery, List<Patient>>
 {
-    private  readonly IPatientRepository _patientRepository;
+    private readonly IPatientRepository _patientRepository;
 
     public GetRecentPatientsQueryHandler(IPatientRepository patientRepository)
     {
@@ -17,5 +17,4 @@ public class GetRecentPatientsQueryHandler : IRequestHandler<GetRecentPatientsQu
     {
         return await _patientRepository.GetRecentPatientsAsync(request.Count);
     }
-    
 }

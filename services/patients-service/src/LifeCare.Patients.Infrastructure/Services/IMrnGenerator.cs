@@ -1,8 +1,8 @@
 // LifeCare.Infrastructure/Services/IMrnGenerator.cs
-namespace LifeCare.Modules.Shared.Infrastructure
+
+namespace LifeCare.Modules.Shared.Infrastructure;
+
+public interface IMrnGenerator
 {
-    public interface IMrnGenerator
-    {
-        Task<string> GenerateAsync();
-    }
+    Task<string> GenerateAsync();
 }

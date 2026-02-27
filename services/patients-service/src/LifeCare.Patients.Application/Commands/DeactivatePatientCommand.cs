@@ -1,7 +1,5 @@
-
-
-using LifeCare.Modules.Patients.Application.Dtos;
 using LifeCare.Modules.Shared.Application.common;
+using LifeCare.Patients.Application.Dtos;
 using MediatR;
 
 namespace LifeCare.Modules.Patients.Application.Commands;

@@ -1,70 +1,67 @@
-using System;
+namespace LifeCare.Modules.Patients.Domain.ValuedObjects;
 
-namespace LifeCare.Modules.Patients.Domain.ValuedObjects
+public class MedicalRecordNumber
 {
-    public class MedicalRecordNumber
+    private MedicalRecordNumber(string value, DateTime createdDate)
     {
-        // The MRN string, e.g., "LC-2026-0001"
-        public string Value { get; }
-        
-        // When this MRN was created
-        public DateTime CreatedDate { get; }
+        Value = value ?? throw new ArgumentNullException(nameof(value));
+        CreatedDate = createdDate;
+    }
 
-        private MedicalRecordNumber(string value, DateTime createdDate)
-        {
-            Value = value ?? throw new ArgumentNullException(nameof(value));
-            CreatedDate = createdDate;
-        }
+    // The MRN string, e.g., "LC-2026-0001"
+    public string Value { get; }
 
-        /// <summary>
-        /// Generate a new MRN with a sequential number
-        /// </summary>
-        public static MedicalRecordNumber Generate(int sequenceNumber)
-        {
-            var prefix = "LC"; // Your hospital/company prefix
-            var year = DateTime.Now.Year;
-            var sequence = sequenceNumber.ToString("D4"); // Pads 1 -> "0001"
-            var mrn = $"{prefix}-{year}-{sequence}";
+    // When this MRN was created
+    public DateTime CreatedDate { get; }
 
-            return new MedicalRecordNumber(mrn, DateTime.UtcNow);
-        }
+    /// <summary>
+    ///     Generate a new MRN with a sequential number
+    /// </summary>
+    public static MedicalRecordNumber Generate(int sequenceNumber)
+    {
+        var prefix = "LC"; // Your hospital/company prefix
+        var year = DateTime.Now.Year;
+        var sequence = sequenceNumber.ToString("D4"); // Pads 1 -> "0001"
+        var mrn = $"{prefix}-{year}-{sequence}";
 
-        /// <summary>
-        /// Check if this MRN belongs to a specific year
-        /// </summary>
-        public bool IsForYear(int year)
-        {
-            // MRN format: "LC-2026-0001"
-            var parts = Value.Split('-');
-            if (parts.Length >= 2 && int.TryParse(parts[1], out int mrnYear))
-            {
-                return mrnYear == year;
-            }
-            return false;
-        }
+        return new MedicalRecordNumber(mrn, DateTime.UtcNow);
+    }
 
-        /// <summary>
-        /// Try to get the numeric sequence part of the MRN
-        /// </summary>
-        public int? TryGetSequence()
-        {
-            // MRN format: "LC-2026-0001"
-            var parts = Value.Split('-');
-            if (parts.Length == 3 && int.TryParse(parts[2], out int seq))
-            {
-                return seq;
-            }
-            return null;
-        }
+    /// <summary>
+    ///     Check if this MRN belongs to a specific year
+    /// </summary>
+    public bool IsForYear(int year)
+    {
+        // MRN format: "LC-2026-0001"
+        var parts = Value.Split('-');
+        if (parts.Length >= 2 && int.TryParse(parts[1], out var mrnYear)) return mrnYear == year;
+        return false;
+    }
 
-        public override string ToString() => Value;
+    /// <summary>
+    ///     Try to get the numeric sequence part of the MRN
+    /// </summary>
+    public int? TryGetSequence()
+    {
+        // MRN format: "LC-2026-0001"
+        var parts = Value.Split('-');
+        if (parts.Length == 3 && int.TryParse(parts[2], out var seq)) return seq;
+        return null;
+    }
 
-        // Optional: equality based on MRN value
-        public override bool Equals(object? obj)
-        {
-            return obj is MedicalRecordNumber other && other.Value == Value;
-        }
+    public override string ToString()
+    {
+        return Value;
+    }
 
-        public override int GetHashCode() => Value.GetHashCode();
+    // Optional: equality based on MRN value
+    public override bool Equals(object? obj)
+    {
+        return obj is MedicalRecordNumber other && other.Value == Value;
+    }
+
+    public override int GetHashCode()
+    {
+        return Value.GetHashCode();
     }
 }

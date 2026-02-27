@@ -4,14 +4,16 @@ namespace LifeCare.Modules.Patients.Domain;
 
 public class PatientStatusHistory
 {
+    private PatientStatusHistory()
+    {
+    }
+
     public Guid Id { get; private set; }
     public Guid PatientId { get; private set; }
     public PatientStatus Status { get; private set; }
     public DateTime ChangedAt { get; private set; }
     public string ChangedBy { get; private set; }
     public string? Notes { get; private set; }
-    
-    private PatientStatusHistory() {}
 
     public static PatientStatusHistory Create(
         Guid patientId,
@@ -30,5 +32,4 @@ public class PatientStatusHistory
             Notes = notes
         };
     }
-    
 }

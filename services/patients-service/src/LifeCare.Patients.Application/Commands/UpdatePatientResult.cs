@@ -1,4 +1,4 @@
-using LifeCare.Modules.Patients.Application.Dtos;
+using LifeCare.Patients.Application.Dtos;
 
 namespace LifeCare.Modules.Patients.Application.Commands;
 
@@ -13,7 +13,7 @@ public class UpdatePatientResult
         return new UpdatePatientResult
         {
             IsSuccess = true,
-            PatientDto = patientDto,
+            PatientDto = patientDto
         };
     }
 
@@ -22,7 +22,7 @@ public class UpdatePatientResult
         return new UpdatePatientResult
         {
             IsSuccess = false,
-            Error = error,
+            Error = error
         };
     }
 }

@@ -1,23 +1,25 @@
+﻿using System.Net.Mail;
 using LifeCare.Personnel.Domain.Common;
-using LifeCare.Personnel.Domain.Enum;
+using LifeCare.Personnel.Domain.Enums;
 using LifeCare.Personnel.Domain.Events;
 
 namespace LifeCare.Personnel.Domain;
 
 public class Personnel : AggregateRoot
 {
-    public Guid Id { get; private set; }
-    public string FullName { get; private set; } = string.Empty;
-    public string Email { get; private set; } = string.Empty;
-    public PersonnelRole Role { get; private set; } 
-    public EmploymentStatus Status {get; private set;}
-    public List<string> Privileges { get; private set; }
-    public DateTime CreatedAt  { get; private set; }
-    public DateTime UpdatedAt { get; private set; }
-    public Personnel()
+    private Personnel()
     {
         Privileges = new List<string>();
     }
+
+    public Guid Id { get; private set; }
+    public string FullName { get; private set; }
+    public string Email { get; private set; }
+    public PersonnelRole Role { get; private set; }
+    public EmploymentStatus Status { get; private set; }
+    public List<string> Privileges { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+    public DateTime UpdatedAt { get; private set; }
 
     public static Personnel Create(
         string fullName,
@@ -25,9 +27,10 @@ public class Personnel : AggregateRoot
         PersonnelRole role,
         List<string>? privileges,
         string createdBy)
+
+
     {
         ValidateInput(fullName, email);
-
         var personnel = new Personnel
         {
             Id = Guid.NewGuid(),
@@ -38,24 +41,19 @@ public class Personnel : AggregateRoot
             Privileges = privileges ?? new List<string>(),
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
-
         };
         personnel.AddDomainEvent(new PersonnelRegisteredEvent(
             personnel.Id,
             personnel.FullName,
-            personnel.Role
-        ));
+            personnel.Role));
         return personnel;
-
-
     }
 
     public void UpdateInfo(string fullName, string email)
     {
         ValidateInput(fullName, email);
-        
         FullName = fullName.Trim();
-        Email = email.Trim();
+        Email = email.Trim().ToLower();
         UpdatedAt = DateTime.UtcNow;
     }
 
@@ -71,9 +69,10 @@ public class Personnel : AggregateRoot
         Status = EmploymentStatus.Inactive;
         UpdatedAt = DateTime.UtcNow;
     }
-    public void ReActivate()
+
+    public void Reactivate()
     {
-        Status = EmploymentStatus.Active;
+        Status = EmploymentStatus.Inactive;
         UpdatedAt = DateTime.UtcNow;
     }
 
@@ -84,16 +83,14 @@ public class Personnel : AggregateRoot
         if (string.IsNullOrWhiteSpace(email))
             throw new DomainException("Email is required");
         if (!IsValidEmail(email))
-            throw new DomainException("Email is invalid");
-        
-        
+            throw new DomainException("Invalid email format");
     }
 
     private static bool IsValidEmail(string email)
     {
         try
         {
-            var addr = new System.Net.Mail.MailAddress(email);
+            var addr = new MailAddress(email);
             return addr.Address == email;
         }
         catch

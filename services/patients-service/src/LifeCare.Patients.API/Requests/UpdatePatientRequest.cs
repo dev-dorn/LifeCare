@@ -1,9 +1,9 @@
 namespace LifeCare.API.Controllers.Requests;
- 
+
 public class UpdatePatientRequest
 {
     public required string ShifNumber { get; set; }
-    public required string NationalId { get; set; }  
+    public required string NationalId { get; set; }
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
     public DateTime DateOfBirth { get; set; }
@@ -12,7 +12,7 @@ public class UpdatePatientRequest
     public string? Email { get; set; }
     public string? County { get; set; }
     public string? SubCounty { get; set; }
-    
+
     public string? Country { get; set; }
     public string? ZipCode { get; set; }
     public string? GuardianName { get; set; }

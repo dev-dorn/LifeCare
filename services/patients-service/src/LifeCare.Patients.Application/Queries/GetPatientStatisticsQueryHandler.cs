@@ -1,8 +1,6 @@
-using System.Reflection.Metadata;
-using LifeCare.Modules.Shared.Application.Interfaces.Repositories;
 using LifeCare.Modules.Patients.Application.Dtos;
-using LifeCare.Modules.Patients.Domain;
 using LifeCare.Modules.Patients.Domain.Enums;
+using LifeCare.Modules.Shared.Application.Interfaces.Repositories;
 using MediatR;
 
 namespace LifeCare.Modules.Patients.Application.Queries;
@@ -11,11 +9,12 @@ public class GetPatientStatisticsQueryHandler : IRequestHandler<GetPatientStatis
 
 {
     private readonly IPatientRepository _patientRepository;
-    
-    public GetPatientStatisticsQueryHandler(IPatientRepository patientRepository){
+
+    public GetPatientStatisticsQueryHandler(IPatientRepository patientRepository)
+    {
         _patientRepository = patientRepository;
-        
     }
+
     public async Task<PatientStatisticsDto> Handle(GetPatientStatisticsQuery request,
         CancellationToken cancellationToken)
     {
@@ -38,6 +37,5 @@ public class GetPatientStatisticsQueryHandler : IRequestHandler<GetPatientStatis
                 .ToDictionary(g => g.Key, g => g.Count())
         };
         return stats;
-
     }
 }

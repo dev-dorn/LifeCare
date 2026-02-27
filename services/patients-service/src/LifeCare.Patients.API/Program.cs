@@ -1,11 +1,10 @@
-
-using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 using LifeCare.Modules.Patients.Application.Commands;
+using LifeCare.Modules.Patients.Domain;
 using LifeCare.Modules.Patients.Infrastructure.Persistence;
 using LifeCare.Modules.Patients.Infrastructure.Repositories;
 using LifeCare.Modules.Shared.Application.common;
 using LifeCare.Modules.Shared.Application.Interfaces.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,14 +13,14 @@ builder.Services.AddControllers(options =>
     {
         options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
     }
-    );
+);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
 // Get connection string from configuration
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
-    ?? "Data Source=LifeCare.db";
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+                       ?? "Data Source=LifeCare.db";
 
 // Add database context
 builder.Services.AddDbContext<HospitalDbContext>(options =>
@@ -44,8 +43,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAll", policy =>
     {
         policy.AllowAnyOrigin()
-               .AllowAnyMethod()
-               .AllowAnyHeader();
+            .AllowAnyMethod()
+            .AllowAnyHeader();
     });
 });
 
@@ -73,9 +72,9 @@ app.MapControllers();
 // Add default routes
 app.MapGet("/", () => Results.Redirect("/swagger/index.html"));
 app.MapGet("/api", () => Results.Redirect("/swagger/index.html"));
-app.MapGet("/health", () => Results.Json(new 
-{ 
-    Status = "Healthy", 
+app.MapGet("/health", () => Results.Json(new
+{
+    Status = "Healthy",
     Timestamp = DateTime.UtcNow,
     Service = "LifeCare Hospital API",
     Version = "1.0",
@@ -89,13 +88,13 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<HospitalDbContext>();
-        
+
         // Ensure database is created
         await context.Database.MigrateAsync();
-        
+
         // Seed initial data
         await SeedDataAsync(context);
-        
+
         Console.WriteLine("✅ Database initialized successfully!");
     }
     catch (Exception ex)
@@ -108,9 +107,9 @@ Console.WriteLine("======================================================");
 Console.WriteLine("🚀 LifeCare Hospital API - .NET 10");
 Console.WriteLine("📚 Activity 01: Identity & Intake");
 Console.WriteLine("🌐 Endpoints:");
-Console.WriteLine($"   • Swagger UI:    http://localhost:5000");
-Console.WriteLine($"   • API:           http://localhost:5000/api/patients");
-Console.WriteLine($"   • Health:        http://localhost:5000/health");
+Console.WriteLine("   • Swagger UI:    http://localhost:5000");
+Console.WriteLine("   • API:           http://localhost:5000/api/patients");
+Console.WriteLine("   • Health:        http://localhost:5000/health");
 Console.WriteLine("======================================================");
 
 app.Run();
@@ -121,79 +120,79 @@ static async Task SeedDataAsync(HospitalDbContext context)
     if (!await context.Patients.AnyAsync())
     {
         Console.WriteLine("📊 Seeding initial patient data...");
-        
+
         try
         {
             // Create patient 1
-            var patient1 = LifeCare.Modules.Patients.Domain.Patient.CreateForSeed(
-                id: Guid.NewGuid(),
-                mrn: "LC-2024-0001",
-                shifNumber: "xxxxxxxxxx",
-                nationalId: "123-45-6789",
-                firstName: "John",
-                lastName: "Doe",
-                dateOfBirth: new DateTime(1980, 5, 15),
-                gender: "Male",
-                phoneNumber: "+1-555-1234",
-                email: "john.doe@example.com",
-                county: "123 Main St",
-                subCounty: "Anytown",
-                country: "CA",
-                zipCode: "12345",
-                createdAt: DateTime.UtcNow.AddDays(-1),
-                createdBy: "System"
+            var patient1 = Patient.CreateForSeed(
+                Guid.NewGuid(),
+                "LC-2024-0001",
+                "xxxxxxxxxx",
+                "123-45-6789",
+                "John",
+                "Doe",
+                new DateTime(1980, 5, 15),
+                "Male",
+                "+1-555-1234",
+                "john.doe@example.com",
+                "123 Main St",
+                "Anytown",
+                "CA",
+                "12345",
+                DateTime.UtcNow.AddDays(-1),
+                "System"
             );
-            
+
             // Create patient 2
-            var patient2 = LifeCare.Modules.Patients.Domain.Patient.CreateForSeed(
-                id: Guid.NewGuid(),
-                mrn: "LC-2024-0002",
-                shifNumber: "xxxxxxxxxx",
-                nationalId: "987-65-4321",
-                firstName: "Jane",
-                lastName: "Smith",
-                dateOfBirth: new DateTime(1990, 8, 22),
-                gender: "Female",
-                phoneNumber: "+1-555-5678",
-                email: "",
-                county:"",
-                subCounty:"",
-                country:"",
-                zipCode: "",
-                createdAt: DateTime.UtcNow.AddHours(-12),
-                createdBy: "System"
+            var patient2 = Patient.CreateForSeed(
+                Guid.NewGuid(),
+                "LC-2024-0002",
+                "xxxxxxxxxx",
+                "987-65-4321",
+                "Jane",
+                "Smith",
+                new DateTime(1990, 8, 22),
+                "Female",
+                "+1-555-5678",
+                "",
+                "",
+                "",
+                "",
+                "",
+                DateTime.UtcNow.AddHours(-12),
+                "System"
             );
-            
+
             // Create patient 3
-            var patient3 = LifeCare.Modules.Patients.Domain.Patient.CreateForSeed(
-                id: Guid.NewGuid(),
-                mrn: "LC-2024-0003",
-                shifNumber: "xxxxxxxxxx",
-                nationalId: "456-78-9012",
-                firstName: "Emma",
-                lastName: "Johnson",
-                dateOfBirth: new DateTime(2015, 3, 10),
-                gender: "Female",
-                phoneNumber: "+1-555-9012",
-                email: "emma.parent@example.com",
-                county:"789 Pine St",
-                subCounty:"Sometown",
-                country:"TX",
-                zipCode: "67890",
-                createdAt: DateTime.UtcNow.AddHours(-6),
-                createdBy: "System",
-                guardianName: "Sarah Johnson",
-                guardianRelationship: "Mother",
-                guardianPhone: "+1-555-3456"
+            var patient3 = Patient.CreateForSeed(
+                Guid.NewGuid(),
+                "LC-2024-0003",
+                "xxxxxxxxxx",
+                "456-78-9012",
+                "Emma",
+                "Johnson",
+                new DateTime(2015, 3, 10),
+                "Female",
+                "+1-555-9012",
+                "emma.parent@example.com",
+                "789 Pine St",
+                "Sometown",
+                "TX",
+                "67890",
+                DateTime.UtcNow.AddHours(-6),
+                "System",
+                "Sarah Johnson",
+                "Mother",
+                "+1-555-3456"
             );
-            
+
             await context.Patients.AddAsync(patient1);
             await context.Patients.AddAsync(patient2);
             await context.Patients.AddAsync(patient3);
-            
+
             await context.SaveChangesAsync();
-            
-            Console.WriteLine($"✅ Added 3 seed patients!");
+
+            Console.WriteLine("✅ Added 3 seed patients!");
         }
         catch (Exception ex)
         {

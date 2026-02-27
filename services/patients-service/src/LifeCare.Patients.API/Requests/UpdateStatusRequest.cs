@@ -6,5 +6,4 @@ public class UpdateStatusRequest
     public string ChangedBy { get; set; } = null!;
     public DateTime ChangedAt { get; set; }
     public string? Notes { get; set; }
-    
 }

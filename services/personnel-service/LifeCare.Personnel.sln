@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F058C4A3-95B4-42B0-805D-00F884990579}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LifeCare.Personnel.API", "src\LifeCare.Personnel.API\LifeCare.Personnel.API.csproj", "{790F2E9E-6E43-4049-AC57-6F0C92FD9469}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LifeCare.Personnel.Application", "src\LifeCare.Personnel.Application\LifeCare.Personnel.Application.csproj", "{3D2C7E2A-0F25-4F88-B36D-A6BBCDC8CB3A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LifeCare.Personnel.Domain", "src\LifeCare.Personnel.Domain\LifeCare.Personnel.Domain.csproj", "{405AE09F-5F9B-42FB-8314-43D28D045588}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LifeCare.Personnel.Infrastructure", "src\LifeCare.Personnel.Infrastructure\LifeCare.Personnel.Infrastructure.csproj", "{13749AF2-E291-4DAA-A414-BD25CBD12EA6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{790F2E9E-6E43-4049-AC57-6F0C92FD9469}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{790F2E9E-6E43-4049-AC57-6F0C92FD9469}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{790F2E9E-6E43-4049-AC57-6F0C92FD9469}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{790F2E9E-6E43-4049-AC57-6F0C92FD9469}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D2C7E2A-0F25-4F88-B36D-A6BBCDC8CB3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D2C7E2A-0F25-4F88-B36D-A6BBCDC8CB3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D2C7E2A-0F25-4F88-B36D-A6BBCDC8CB3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D2C7E2A-0F25-4F88-B36D-A6BBCDC8CB3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{405AE09F-5F9B-42FB-8314-43D28D045588}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{405AE09F-5F9B-42FB-8314-43D28D045588}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{405AE09F-5F9B-42FB-8314-43D28D045588}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{405AE09F-5F9B-42FB-8314-43D28D045588}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13749AF2-E291-4DAA-A414-BD25CBD12EA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13749AF2-E291-4DAA-A414-BD25CBD12EA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13749AF2-E291-4DAA-A414-BD25CBD12EA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13749AF2-E291-4DAA-A414-BD25CBD12EA6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{790F2E9E-6E43-4049-AC57-6F0C92FD9469} = {F058C4A3-95B4-42B0-805D-00F884990579}
+		{3D2C7E2A-0F25-4F88-B36D-A6BBCDC8CB3A} = {F058C4A3-95B4-42B0-805D-00F884990579}
+		{405AE09F-5F9B-42FB-8314-43D28D045588} = {F058C4A3-95B4-42B0-805D-00F884990579}
+		{13749AF2-E291-4DAA-A414-BD25CBD12EA6} = {F058C4A3-95B4-42B0-805D-00F884990579}
+	EndGlobalSection
+EndGlobal

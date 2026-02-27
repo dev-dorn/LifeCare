@@ -1,6 +1,5 @@
-
-using LifeCare.Modules.Shared.Application.Interfaces.Repositories;
 using LifeCare.Modules.Patients.Domain;
+using LifeCare.Modules.Shared.Application.Interfaces.Repositories;
 using MediatR;
 
 namespace LifeCare.Modules.Patients.Application.Queries;

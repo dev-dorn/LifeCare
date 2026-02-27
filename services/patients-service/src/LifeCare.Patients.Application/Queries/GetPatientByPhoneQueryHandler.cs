@@ -1,5 +1,5 @@
-using LifeCare.Modules.Shared.Application.Interfaces.Repositories;
 using LifeCare.Modules.Patients.Domain;
+using LifeCare.Modules.Shared.Application.Interfaces.Repositories;
 using MediatR;
 
 namespace LifeCare.Modules.Patients.Application.Queries;
@@ -7,6 +7,7 @@ namespace LifeCare.Modules.Patients.Application.Queries;
 public class GetPatientByPhoneQueryHandler : IRequestHandler<GetPatientByPhoneQuery, Patient?>
 {
     private readonly IPatientRepository _patientRepository;
+
     public GetPatientByPhoneQueryHandler(IPatientRepository patientRepository)
     {
         _patientRepository = patientRepository;

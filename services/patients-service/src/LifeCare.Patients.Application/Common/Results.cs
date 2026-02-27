@@ -2,32 +2,46 @@ namespace LifeCare.Modules.Shared.Application.common;
 
 public class Result<T>
 {
+    private Result(bool isSuccess, T data, string error)
+    {
+        IsSuccess = isSuccess;
+        Data = data;
+        Error = error;
+    }
+
     public bool IsSuccess { get; }
     public T Data { get; }
     public string Error { get; }
 
-    private Result(bool isSuccess, T data, string error)
+    public static Result<T> Success(T data)
     {
-        this.IsSuccess = isSuccess;
-        this.Data = data;
-        this.Error = error;
+        return new Result<T>(true, data, null);
     }
 
-    public static Result<T> Success(T data) => new(true, data, null);
-    public static Result<T> Failure (string error) => new(false, default, error);
-
+    public static Result<T> Failure(string error)
+    {
+        return new Result<T>(false, default, error);
+    }
 }
 
 public class Result
 {
+    private Result(bool isSuccess, string error)
+    {
+        IsSuccess = isSuccess;
+        Error = error;
+    }
+
     public bool IsSuccess { get; }
     public string Error { get; }
 
-    private Result(bool isSuccess, string error)
+    public static Result Success()
     {
-        this.IsSuccess = isSuccess;
-        this.Error = error;
+        return new Result(true, null);
     }
-    public static Result Success() => new(true, null);
-    public static Result Failure(string error) => new(false, error);
+
+    public static Result Failure(string error)
+    {
+        return new Result(false, error);
+    }
 }

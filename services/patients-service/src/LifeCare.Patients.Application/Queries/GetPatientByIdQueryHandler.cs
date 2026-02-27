@@ -1,22 +1,20 @@
-using LifeCare.Modules.Shared.Application.Interfaces.Repositories;
 using LifeCare.Modules.Patients.Domain;
+using LifeCare.Modules.Shared.Application.Interfaces.Repositories;
 using MediatR;
 
-namespace LifeCare.Modules.Patients.Application.Queries
+namespace LifeCare.Modules.Patients.Application.Queries;
 
+public class GetPatientByIdQueryHandler : IRequestHandler<GetPatientByIdQuery, Patient?>
 {
-    public class GetPatientByIdQueryHandler : IRequestHandler<GetPatientByIdQuery, Patient?>
+    private readonly IPatientRepository _patientRepository;
+
+    public GetPatientByIdQueryHandler(IPatientRepository patientRepository)
     {
-        private readonly IPatientRepository _patientRepository;
+        _patientRepository = patientRepository;
+    }
 
-        public GetPatientByIdQueryHandler(IPatientRepository patientRepository)
-        {
-            _patientRepository = patientRepository;
-        }
-
-        public async Task<Patient?> Handle(GetPatientByIdQuery request, CancellationToken cancellationToken)
-        {
-            return await _patientRepository.GetByIdAsync(request.Id);
-        }
+    public async Task<Patient?> Handle(GetPatientByIdQuery request, CancellationToken cancellationToken)
+    {
+        return await _patientRepository.GetByIdAsync(request.Id);
     }
 }

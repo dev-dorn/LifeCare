@@ -1,15 +1,14 @@
 // LifeCare.API/Controllers/PatientsController.cs
 
-using System.ComponentModel.DataAnnotations;
 using LifeCare.API.Controllers.Requests;
 using LifeCare.Modules.Patients.Application.Commands;
-using LifeCare.Modules.Patients.Application.Dtos;
 using LifeCare.Modules.Patients.Application.Queries;
 using LifeCare.Modules.Patients.Domain;
 using LifeCare.Modules.Patients.Domain.Enums;
+using LifeCare.Patients.Application.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-
+using GuardianRequest = LifeCare.Modules.Patients.Application.Commands.GuardianRequest;
 
 namespace LifeCare.API.Controllers
 {
@@ -17,8 +16,8 @@ namespace LifeCare.API.Controllers
     [Route("api/[controller]")]
     public class PatientsController : ControllerBase
     {
-        private readonly IMediator _mediator;
         private readonly ILogger<PatientsController> _logger;
+        private readonly IMediator _mediator;
 
         public PatientsController(
             IMediator mediator,
@@ -57,7 +56,7 @@ namespace LifeCare.API.Controllers
 
                 Guardian = request.Guardian == null
                     ? null
-                    : new LifeCare.Modules.Patients.Application.Commands.GuardianRequest
+                    : new GuardianRequest
                     {
                         FirstName = request.Guardian.FirstName,
                         LastName = request.Guardian.LastName,
@@ -108,13 +107,11 @@ namespace LifeCare.API.Controllers
                 await _mediator.Send(new GetPatientByMrnQuery { MRN = mrn });
 
             if (patient == null)
-            {
                 return NotFound(new ApiResponse<object>
                 {
                     Success = false,
                     Error = "Patient not found"
                 });
-            }
 
             return Ok(new ApiResponse<PatientDto>
             {
@@ -147,36 +144,31 @@ namespace LifeCare.API.Controllers
                 Data = patients
             });
         }
-        
+
         // 
         // GET PATIENTS BY ID
         //
-        [HttpGet("{id:guid}")]  // Only matches GUIDs
+        [HttpGet("{id:guid}")] // Only matches GUIDs
         public async Task<IActionResult> GetPatient(Guid id)
         {
             var query = new GetPatientByIdQuery(id);
             var patient = await _mediator.Send(query);
-    
-            if (patient == null)
-            {
-                return NotFound(new { message = $"Patient with ID {id} not found" });
-            }
-    
+
+            if (patient == null) return NotFound(new { message = $"Patient with ID {id} not found" });
+
             return Ok(new { success = true, data = patient });
         }
+
         [HttpGet("phone/{phoneNumber}")]
         public async Task<IActionResult> GetPatientByPhoneNumber(string phoneNumber)
         {
             var query = new GetPatientByPhoneQuery(phoneNumber);
             var patient = await _mediator.Send(query);
 
-            if (patient == null)
-            {
-                return NotFound(new { message = $"Patient with PhoneNumber {phoneNumber} not found" });
-            }
-            return Ok(new{success = true, data = patient });
-
+            if (patient == null) return NotFound(new { message = $"Patient with PhoneNumber {phoneNumber} not found" });
+            return Ok(new { success = true, data = patient });
         }
+
         //
         // SEARCH PATIENTS
         //
@@ -185,9 +177,10 @@ namespace LifeCare.API.Controllers
         {
             var query = new SearchPatientQuery(name, city);
             var patients = await _mediator.Send(query);
-    
+
             return Ok(new { success = true, data = patients });
         }
+
         [HttpGet("recent")]
         [ProducesResponseType(typeof(List<Patient>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRecentPatients([FromQuery] int count = 10)
@@ -226,14 +219,15 @@ namespace LifeCare.API.Controllers
                 GuardianRelationship = request.GuardianRelationship,
                 GuardianPhone = request.GuardianPhone
             };
-    
+
             var result = await _mediator.Send(command);
-    
+
             if (!result.IsSuccess)
                 return NotFound(new { success = false, error = result.Error });
 
             return Ok(new { success = true, data = result.Data });
         }
+
         [HttpPatch("{id}/status")]
         public async Task<IActionResult> UpdatePatientStatus(Guid id, [FromBody] UpdateStatusRequest request)
         {
@@ -265,16 +259,16 @@ namespace LifeCare.API.Controllers
 
             if (patient == null)
                 return NotFound(new { success = false, error = "Patient not found" });
-            return Ok(new {success = true, data = PatientDto.FromPatient(patient) });
+            return Ok(new { success = true, data = PatientDto.FromPatient(patient) });
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeactivatePatient(Guid id)
         {
             var result = await _mediator.Send(new DeactivatePatientCommand(id));
-            
+
             if (!result.IsSuccess)
-                return NotFound(new {success = false, error = result.Error});
+                return NotFound(new { success = false, error = result.Error });
             return Ok(new { success = true, message = "Patient deactivated", datas = result.Data });
         }
 
@@ -289,31 +283,23 @@ namespace LifeCare.API.Controllers
         public async Task<IActionResult> GetStatistics()
         {
             var stats = await _mediator.Send(new GetPatientStatisticsQuery());
-            return Ok(new {success = true, data = stats });
+            return Ok(new { success = true, data = stats });
         }
-
-
-       
     }
-        
-    }
+}
 
-    // =============================
-    // REQUEST DTOs (API LAYER)
-    // =============================
-    
+// =============================
+// REQUEST DTOs (API LAYER)
+// =============================
 
-    
 
-    // =============================
-    // API RESPONSE WRAPPER
-    // =============================
-    public class ApiResponse<T>
-    {
-        public bool Success { get; set; }
-        public string Message { get; set; }
-        public string Error { get; set; }
-        public T Data { get; set; }
-    }
-    
-
+// =============================
+// API RESPONSE WRAPPER
+// =============================
+public class ApiResponse<T>
+{
+    public bool Success { get; set; }
+    public string Message { get; set; }
+    public string Error { get; set; }
+    public T Data { get; set; }
+}

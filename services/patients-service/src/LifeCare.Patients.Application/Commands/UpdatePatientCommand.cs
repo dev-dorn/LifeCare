@@ -1,5 +1,5 @@
 using LifeCare.Modules.Shared.Application.common;
-using LifeCare.Modules.Patients.Application.Dtos;
+using LifeCare.Patients.Application.Dtos;
 using MediatR;
 
 namespace LifeCare.Modules.Patients.Application.Commands;
@@ -19,10 +19,9 @@ public class UpdatePatientCommand : IRequest<Result<PatientDto>>
     public string? ZipCode { get; set; }
     public int Status { get; set; }
     public string? UpdatedBy { get; set; }
-    public string? GuardianName{get; set;}
-    public string? GuardianRelationship{get; set;}
-    public string? GuardianPhone{get; set;}
-    public required string NationalId{get; set;}
+    public string? GuardianName { get; set; }
+    public string? GuardianRelationship { get; set; }
+    public string? GuardianPhone { get; set; }
+    public required string NationalId { get; set; }
     public required string ShifNumber { get; set; }
-    
 }

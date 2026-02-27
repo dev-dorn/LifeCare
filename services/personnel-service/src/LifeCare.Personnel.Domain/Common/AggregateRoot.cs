@@ -9,6 +9,9 @@ public abstract class AggregateRoot
     {
         _domainEvents.Add(domainEvent);
     }
-    public void ClearDomainEvents() => _domainEvents.Clear();
-    
+
+    public void ClearDomainEvents()
+    {
+        _domainEvents.Clear();
+    }
 }
