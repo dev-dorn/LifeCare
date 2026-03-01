@@ -12,14 +12,14 @@ public class Personnel : AggregateRoot
         Privileges = new List<string>();
     }
 
-    public Guid Id { get; private set; }
-    public string FullName { get; private set; }
-    public string Email { get; private set; }
-    public PersonnelRole Role { get; private set; }
-    public EmploymentStatus Status { get; private set; }
-    public List<string> Privileges { get; private set; }
-    public DateTime CreatedAt { get; private set; }
-    public DateTime UpdatedAt { get; private set; }
+    public Guid Id { get; internal set; }
+    public string FullName { get; internal set; } = string.Empty;
+    public string Email { get; internal set; } = string.Empty;
+    public PersonnelRole Role { get; internal set; }
+    public EmploymentStatus Status { get; internal set; }
+    public List<string> Privileges { get; internal set; }
+    public DateTime CreatedAt { get; internal set; }
+    public DateTime UpdatedAt { get; internal set; }
 
     public static Personnel Create(
         string fullName,
@@ -72,7 +72,7 @@ public class Personnel : AggregateRoot
 
     public void Reactivate()
     {
-        Status = EmploymentStatus.Inactive;
+        Status = EmploymentStatus.Active;
         UpdatedAt = DateTime.UtcNow;
     }
 

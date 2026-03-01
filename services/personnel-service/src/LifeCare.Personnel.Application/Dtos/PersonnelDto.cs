@@ -11,7 +11,7 @@ namespace LifeCare.Personnel.Application.Dtos
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
-        public static PersonnelDto FromDomain(LifeCare.Personnel.Domain.Personnel personnel)
+        public static PersonnelDto FromPersonnel(LifeCare.Personnel.Domain.Personnel personnel)
         {
             return new PersonnelDto
             {

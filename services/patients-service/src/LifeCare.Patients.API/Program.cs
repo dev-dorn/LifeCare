@@ -127,7 +127,7 @@ static async Task SeedDataAsync(HospitalDbContext context)
             var patient1 = Patient.CreateForSeed(
                 Guid.NewGuid(),
                 "LC-2024-0001",
-                "xxxxxxxxxx",
+                "shif-00001001",
                 "123-45-6789",
                 "John",
                 "Doe",
@@ -147,7 +147,7 @@ static async Task SeedDataAsync(HospitalDbContext context)
             var patient2 = Patient.CreateForSeed(
                 Guid.NewGuid(),
                 "LC-2024-0002",
-                "xxxxxxxxxx",
+                "SHIF-0000001",
                 "987-65-4321",
                 "Jane",
                 "Smith",
@@ -167,7 +167,7 @@ static async Task SeedDataAsync(HospitalDbContext context)
             var patient3 = Patient.CreateForSeed(
                 Guid.NewGuid(),
                 "LC-2024-0003",
-                "xxxxxxxxxx",
+                "shif-000000102",
                 "456-78-9012",
                 "Emma",
                 "Johnson",

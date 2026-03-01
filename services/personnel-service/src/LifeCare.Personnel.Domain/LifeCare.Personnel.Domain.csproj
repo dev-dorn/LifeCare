@@ -5,13 +5,5 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
-
-    <ItemGroup>
-        <Folder Include="ValuedObjects\"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\..\..\patients-service\src\LifeCare.Patients.Domain\LifeCare.Patients.Domain.csproj"/>
-    </ItemGroup>
-
+    
 </Project>
