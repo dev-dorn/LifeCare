@@ -1,4 +1,6 @@
+using LifeCare.Personnel.Application.Dtos;
 using LifeCare.Personnel.Application.Interfaces;
+using LifeCare.Personnel.Application.Queries;
 using LifeCare.Personnel.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -53,5 +55,17 @@ public class PersonnelRepository : IPersonnelRepository
     public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<List<Domain.Personnel>> GetPagedAsync(int page, int pageSize, CancellationToken cancellationToken = default)
+    {
+         return await _context.Personnel
+             .AsNoTracking()
+             .OrderByDescending(p => p.CreatedAt)
+             .Skip((page - 1) * pageSize)
+             .Take(pageSize)
+             .ToListAsync(cancellationToken);
+                 
+                 
     }
 }

@@ -59,4 +59,31 @@ public class PersonnelController : ControllerBase
 
         return Ok(new { success = true, data = personnel });
     }
+    // get all personnel
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<List<PersonnelDto>>> GetAll([FromQuery] GetAllPersonnelQuery query)
+    {
+        try
+        {
+            _logger.LogInformation("Fetching personnel - Page: {Page}, PageSize: {PageSize}", 
+                query.Page, query.PageSize);
+
+            var personnel = await _mediator.Send(query, HttpContext.RequestAborted);
+            
+            return Ok(personnel);
+        }
+        catch (ArgumentException ex)
+        {
+            _logger.LogWarning(ex, "Invalid pagination parameters: Page={Page}, PageSize={PageSize}", 
+                query.Page, query.PageSize);
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error fetching personnel");
+            return StatusCode(500, new { message = "An error occurred while fetching personnel" });
+        }
+    }
 }
