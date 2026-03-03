@@ -86,4 +86,38 @@ public class PersonnelController : ControllerBase
             return StatusCode(500, new { message = "An error occurred while fetching personnel" });
         }
     }
+    
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> UpdatePersonnel(Guid id, [FromBody] UpdatePersonnelDto dto)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);  // ✅ Path 1
+
+            var command = new UpdatePersonnelCommand(id, dto);
+            var success = await _mediator.Send(command, HttpContext.RequestAborted);
+        
+            // ✅ Path 2 - MISSING RETURN WAS HERE
+            if (!success)
+                return NotFound(new { message = "Personnel not found" });
+        
+            // ✅ Path 3 - SUCCESS RETURN
+            return Ok(new { message = "Personnel updated successfully" });
+        }
+        catch (ArgumentException ex)
+        {
+            _logger.LogWarning(ex, "Invalid update data for personnel {PersonnelId}", id);
+            return BadRequest(new { message = ex.Message });  // ✅ Path 4
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating personnel {PersonnelId}", id);
+            return StatusCode(500, new { message = "Internal server error" });  // ✅ Path 5
+        }
+    }
+
 }

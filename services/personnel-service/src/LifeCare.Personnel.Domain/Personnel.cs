@@ -98,4 +98,6 @@ public class Personnel : AggregateRoot
             return false;
         }
     }
+    // In Domain/Personnel.cs
+  
 }
