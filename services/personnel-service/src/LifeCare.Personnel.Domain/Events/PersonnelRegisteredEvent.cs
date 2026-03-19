@@ -6,4 +6,5 @@ namespace LifeCare.Personnel.Domain.Events;
 public record PersonnelRegisteredEvent(
     Guid PersonnelId,
     string FirstName,
+    string LastName,
     PersonnelRole Role) : DomainEvent;

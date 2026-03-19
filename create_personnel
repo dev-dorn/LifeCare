@@ -1,0 +1,48 @@
+#!/bin/bash
+
+FIRST_NAMES=("John" "Mary" "Peter" "Jane" "David" "Grace" "James" "Faith" "Daniel" "Lucy")
+LAST_NAMES=("Kamau" "Wanjiru" "Ochieng" "Akinyi" "Mwangi" "Nyambura" "Otieno" "Wairimu")
+
+SUCCESS_COUNT=0
+
+for i in {1..50}; do
+  FIRST=${FIRST_NAMES[$RANDOM % ${#FIRST_NAMES[@]}]}
+  LAST=${LAST_NAMES[$RANDOM % ${#LAST_NAMES[@]}]}
+  FULLNAME="$FIRST $LAST"
+  EMAIL="staff$(printf "%03d" $i)@lifecare.com"
+  ROLE=$((RANDOM % 6))  # 0-5 for enum values
+  
+  case $ROLE in
+    0) PRIVILEGES='["ReadPatient","WritePatient","DeletePatient","ReadPersonnel","WritePersonnel"]' ;;
+    1|3) PRIVILEGES='["ReadPatient","WritePatient","ReadPersonnel"]' ;;
+    *) PRIVILEGES='["ReadPatient"]' ;;
+  esac
+  
+  echo -n "Creating personnel $i: $FULLNAME (Role $ROLE)... "
+  
+  RESPONSE=$(curl -s -w "%{http_code}" -X POST "http://localhost:5002/api/Personnel/register" \
+    -H "Content-Type: application/json" \
+    -d "{
+      \"fullName\": \"$FULLNAME\",
+      \"email\": \"$EMAIL\",
+      \"role\": $ROLE,
+      \"privileges\": $PRIVILEGES,
+      \"createdBy\": \"system-seed-$i\"
+    }")
+  
+  HTTP_CODE=${RESPONSE: -3}
+  
+  if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "201" ]; then
+    echo "✓ (HTTP $HTTP_CODE)"
+    ((SUCCESS_COUNT++))
+  else
+    echo "✗ FAILED (HTTP $HTTP_CODE)"
+  fi
+  
+  sleep 0.2
+done
+
+echo ""
+echo "SUCCESS: $SUCCESS_COUNT/50 personnel created"
+
+

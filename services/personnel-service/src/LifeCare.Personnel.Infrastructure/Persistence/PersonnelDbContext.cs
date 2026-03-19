@@ -27,7 +27,7 @@ public class PersonnelDbContext : DbContext
         {
             entity.HasKey(p => p.Id);
 
-            entity.Property(p => p.FullName)
+            entity.Property(p => p.FirstName)
                 .IsRequired()
                 .HasMaxLength(200);
 

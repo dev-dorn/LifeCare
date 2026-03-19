@@ -29,7 +29,7 @@ public class PersonnelController : ControllerBase
     {
         var command = new RegisterPersonnelCommand
         {
-            FullName = request.FullName,
+            FirstName = request.FullName,
             Email = request.Email,
             Role = request.Role,
             Privileges = request.Privileges

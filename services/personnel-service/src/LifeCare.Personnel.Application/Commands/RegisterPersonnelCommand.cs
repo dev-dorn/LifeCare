@@ -7,9 +7,11 @@ namespace LifeCare.Personnel.Application.Commands;
 
 public class RegisterPersonnelCommand : IRequest<Result<PersonnelDto>>
 {
-    public string FullName { get; set; } = string.Empty;
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    
     public string Email { get; set; } = string.Empty;
     public PersonnelRole Role { get; set; }
     public List<string>? Privileges { get; set; }
-    public string Createdby { get; set; } = "System";
+    public string CreatedBy { get; set; } = "System";
 }

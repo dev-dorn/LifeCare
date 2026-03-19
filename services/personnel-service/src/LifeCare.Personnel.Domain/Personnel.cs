@@ -13,7 +13,12 @@ public class Personnel : AggregateRoot
     }
 
     public Guid Id { get; internal set; }
-    public string FullName { get; internal set; } = string.Empty;
+    public string FirstName { get; internal set; } = string.Empty;
+    public string LastName { get; internal set; } = string.Empty;
+    public string PhoneNumber { get; internal set; } = string.Empty;
+    public string? LicenseNumber { get; internal set; }
+    public Guid? DepartmentId { get; internal set; }
+    
     public string Email { get; internal set; } = string.Empty;
     public PersonnelRole Role { get; internal set; }
     public EmploymentStatus Status { get; internal set; }
@@ -22,7 +27,8 @@ public class Personnel : AggregateRoot
     public DateTime UpdatedAt { get; internal set; }
 
     public static Personnel Create(
-        string fullName,
+        string firstName,
+        string lastName,
         string email,
         PersonnelRole role,
         List<string>? privileges,
@@ -30,11 +36,12 @@ public class Personnel : AggregateRoot
 
 
     {
-        ValidateInput(fullName, email);
+        ValidateInput(firstName, lastName, email);
         var personnel = new Personnel
         {
             Id = Guid.NewGuid(),
-            FullName = fullName.Trim(),
+            FirstName =firstName.Trim(),
+            LastName = lastName.Trim(),
             Email = email.Trim().ToLower(),
             Role = role,
             Status = EmploymentStatus.Active,
@@ -44,17 +51,30 @@ public class Personnel : AggregateRoot
         };
         personnel.AddDomainEvent(new PersonnelRegisteredEvent(
             personnel.Id,
-            personnel.FullName,
+            personnel.FirstName,
+            personnel.LastName,
             personnel.Role));
         return personnel;
     }
 
-    public void UpdateInfo(string fullName, string email)
+    public void UpdateInfo(
+        string firstName,
+        string lastName,
+        string email,
+        string? phoneNumber,
+        string? licenseNumber,
+        Guid? departmentId)
     {
-        ValidateInput(fullName, email);
-        FullName = fullName.Trim();
+        ValidateInput(firstName,lastName, email);
+        FirstName=firstName.Trim();
+        LastName=lastName.Trim();
+        PhoneNumber = phoneNumber;
         Email = email.Trim().ToLower();
         UpdatedAt = DateTime.UtcNow;
+        LicenseNumber = licenseNumber;
+        DepartmentId = departmentId;
+        UpdatedAt = DateTime.UtcNow;
+
     }
 
     public void ChangeRole(PersonnelRole newRole, List<string>? newPrivileges)
@@ -76,11 +96,13 @@ public class Personnel : AggregateRoot
         UpdatedAt = DateTime.UtcNow;
     }
 
-    private static void ValidateInput(string fullName, string email)
+    private static void ValidateInput(string firstName, string email, string lastName)
     {
-        if (string.IsNullOrWhiteSpace(fullName))
+        if (string.IsNullOrWhiteSpace(firstName))
             throw new DomainException("Full name is required");
-        if (string.IsNullOrWhiteSpace(email))
+        if (string.IsNullOrWhiteSpace(lastName))
+            throw new DomainException("last name is required");
+        if(string.IsNullOrWhiteSpace(email))
             throw new DomainException("Email is required");
         if (!IsValidEmail(email))
             throw new DomainException("Invalid email format");

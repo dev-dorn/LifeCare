@@ -37,7 +37,8 @@ public class PersonnelRepository : IPersonnelRepository
     {
         return await _context.Personnel
             .Where(p => p.Role == role)
-            .OrderBy(p => p.FullName)
+            .OrderBy(p => p.FirstName)
+            .ThenBy(p => p.LastName)
             .ToListAsync();
     }
 

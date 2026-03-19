@@ -24,7 +24,14 @@ public class UpdatePersonnelCommandHandler : IRequestHandler<UpdatePersonnelComm
             _logger.LogWarning("Personnel not found: {PersonnelId}", request.Id);
             return false;
         }
-        personnel.UpdateInfo(request.Personnel.FullName, request.Personnel.Email);
+        personnel.UpdateInfo(
+            request.Personnel.FirstName,
+            request.Personnel.LastName,
+            request.Personnel.Email,
+            request.Personnel.PhoneNumber,
+            request.Personnel.LicenseNumber,
+            request.Personnel.DepartmentId // Added this to match your DTO
+        );
         personnel.ChangeRole(request.Personnel.Role, null); 
 
         await _personnelRepository.UpdateAsync(personnel);

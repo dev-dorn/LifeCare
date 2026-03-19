@@ -47,11 +47,12 @@ public class RegisterPersonnelCommandHandler : IRequestHandler<RegisterPersonnel
 
             //create personnel
             var personnel = Domain.Personnel.Create(
-                request.FullName,
+                request.FirstName,
+                request.LastName,
                 request.Email,
                 request.Role,
                 request.Privileges,
-                request.Createdby
+                request.CreatedBy
             );
             //Save the database
             await _repository.AddAsync(personnel);
